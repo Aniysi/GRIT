@@ -1,0 +1,3 @@
+Idee architettura:
+- Pattern startegy per LLM usato per la generazione di testo
+- Pattern strategy per LLM usato nella creazione di embedding (potenzialmente un solo strategy se consideri la riga sopra)

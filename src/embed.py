@@ -31,30 +31,36 @@ def embed_chunk(chunk):
 
 
 def generate_vectors(dir):
-    client = chromadb.Client()
+    # Create a persistent client
+    client = chromadb.PersistentClient(path="./chroma_db")
+    
+    # Create or get existing collection
+    client.delete_collection(name="docs")
     collection = client.create_collection(name="docs")
 
+    # Populate collection
     for root, dirs, files in os.walk(dir):
+        i = 0
         for file in files:
             if file.endswith('.pdf'):
+                print(f'Embedding file {file}...')
                 file_path = os.path.join(root, file)
                 raw_text = extract_pdf(file_path)
                 chunks = chunk_text(raw_text)
 
+                j = 0
                 for chunk in chunks:
+                    print(f'   Embedding chunk {j} of file {file}')
                     collection.add(
-                        ids=[chunk],
-                        
+                        ids=str(i),
+                        documents=chunk,
+                        embeddings=embed_chunk(chunk),
+                        metadatas={file : "chunk "+str(j)}
                     )
+                    i+=1
+                    j+=1
 
 
-
-
-
-pdf_path = "C:/Users/leona/Desktop/Unipd/Terzo anno/Stage/project/docs/pdfdocs/git-tag.pdf"
-raw_text = extract_pdf(pdf_path)
-chunks = chunk_text(raw_text)
-
-
-for chunk in chunks:
-    print(str(embed_chunk(chunk)) + "\n\n\n\n\n")
+if __name__ == "__main__":
+    docs_dir = os.path.join("..", "docs", "pdfdocs")
+    generate_vectors(docs_dir)
