@@ -8,4 +8,4 @@ class Chunker(EmbeddingHandler):
 
     def handle(self, data):
         chunks = self.chunker.split_text(data)
-        return super().handle(chunks)
+        return chunks, super().handle(chunks)

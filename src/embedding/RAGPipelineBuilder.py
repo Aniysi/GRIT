@@ -25,7 +25,7 @@ class RAGPipelineBuilder:
         if not self.first_handler:
             self.first_handler = Embedder(model)
         else:
-            self.first_handler.set_next(Embedder(model))
+            self.first_handler.get_next().set_next(Embedder(model))
         return self
 
     def build(self):

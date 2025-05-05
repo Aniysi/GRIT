@@ -4,8 +4,6 @@ from RAGPipelineBuilder import RAGPipelineBuilder
 import os
 
 if __name__ == "__main__":
-    file_path = os.path.join("..", "..", "docs", "pdfdocs", "git-add.pdf")
-
     chunker = RecursiveTokenChunker(
             chunk_size = 400, 
             chunk_overlap = 0, 
@@ -13,4 +11,12 @@ if __name__ == "__main__":
         )
     pipeline = RAGPipelineBuilder().add_PDFReader().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
 
-    print(type(pipeline.handle(file_path)[0][0]))
+    # docs_path = os.path.join("..", "..", "docs", "pdfdocs")
+    # for root, dirs, files in os.walk(docs_path):
+    #     for file in files:
+    #         if file.endswith('.pdf'):
+
+    # file_path = os.path.join("..", "..", "docs", "pdfdocs", "git-add.pdf")
+    # print(len(pipeline.handle(file_path)))
+    # print(type(pipeline.handle(file_path)))
+    
