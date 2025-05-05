@@ -1,14 +1,16 @@
-from EmbeddingHandler import EmbeddingHandler, PDFReader, Chunker, Embedder
+from chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
+from RAGPipelineBuilder import RAGPipelineBuilder
 
 import os
 
+if __name__ == "__main__":
+    file_path = os.path.join("..", "..", "docs", "pdfdocs", "git-add.pdf")
 
-file_path = os.path.join("..", "..", "docs", "pdfdocs", "git-add.pdf")
+    chunker = RecursiveTokenChunker(
+            chunk_size = 400, 
+            chunk_overlap = 0, 
+            separators = ["\n\n", "\n", ".", "?", " ", ""]
+        )
+    pipeline = RAGPipelineBuilder().add_PDFReader().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
 
-reader = PDFReader()
-chunker = Chunker()
-embedder = Embedder()
-
-reader.set_next(chunker)
-chunker.set_next(embedder)
-print(type(reader.handle(file_path)[0][0]))
+    print(type(pipeline.handle(file_path)[0][0]))
