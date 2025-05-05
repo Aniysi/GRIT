@@ -2,4 +2,7 @@
 pdfdocs
 htmldocs
 
+#RAG database
+chroma_db
+
 notes
