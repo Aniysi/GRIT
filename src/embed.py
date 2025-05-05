@@ -3,6 +3,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import ollama
 import os
 import chromadb
+from chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
 
 
 def extract_pdf(file_path):
@@ -13,19 +14,26 @@ def extract_pdf(file_path):
     return full_text
 
 
-def chunk_text(text, chunk_size=512, chunk_overlap=64):
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size = chunk_size,
-        chunk_overlap = chunk_overlap,
-        length_function = len,
-        separators  = ["\n\n", "\n", " ", ""]
+def chunk_text(text, chunk_size=400, chunk_overlap=0):
+    rec_character_splitter = RecursiveTokenChunker(
+        chunk_size=800,
+        chunk_overlap=0,
+        length_function=len,
+        separators=["\n\n", "\n", ".", "?", " ", ""]
     )
-    return splitter.split_text(text)
+    return rec_character_splitter.split_text(text)
+    # splitter = RecursiveCharacterTextSplitter(
+    #     chunk_size = chunk_size,
+    #     chunk_overlap = chunk_overlap,
+    #     length_function = len,
+    #     separators  = ["\n\n", "\n", " ", ""]
+    # )
+    # return splitter.split_text(text)
 
 
 def embed_chunk(chunk):
     return ollama.embed(
-        model='mxbai-embed-large',
+        model='mxbai-embed-large', # TODO: change to nomic-embed-text for multilingual embedding
         input=chunk
     )["embeddings"]
 
