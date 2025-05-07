@@ -5,8 +5,12 @@ htmldocs
 #RAG database
 chroma_db
 
+#Pycache
 src/embedding/__pycache__
+src/embedding/chunkingLibs/__pycache__
 
-src\embedding\test.py
+#RAG test files
+src/embedding/test.py
 
+#Notes
 notes
