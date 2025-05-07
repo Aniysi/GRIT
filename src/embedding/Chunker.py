@@ -1,5 +1,5 @@
-from EmbeddingHandler import EmbeddingHandler
-from chunkingLibs.base_chunker import BaseChunker
+from embedding.EmbeddingHandler import EmbeddingHandler
+from embedding.chunkingLibs.base_chunker import BaseChunker
 
 class Chunker(EmbeddingHandler):
     def __init__(self, chunker : BaseChunker):

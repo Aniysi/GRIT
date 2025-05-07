@@ -1,74 +1,58 @@
-import fitz
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-import ollama
+from embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
+from embedding.RAGPipelineBuilder import RAGPipelineBuilder
+
 import os
 import chromadb
-from chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
+import sys
+from pathlib import Path
 
+if __name__ == "__main__":
 
-def extract_pdf(file_path):
-    doc = fitz.open(file_path)
-    full_text = ""
-    for page in doc:
-        full_text += page.get_text()
-    return full_text
+    arg = sys.argv[1:]
+    if len(arg) > 1:
+        print("Usage: python src/embedding/__init__.py <path_to_pdf_directory>")
+        sys.exit(1)
 
-
-def chunk_text(text, chunk_size=400, chunk_overlap=0):
-    rec_character_splitter = RecursiveTokenChunker(
-        chunk_size=800,
-        chunk_overlap=0,
-        length_function=len,
-        separators=["\n\n", "\n", ".", "?", " ", ""]
-    )
-    return rec_character_splitter.split_text(text)
-    # splitter = RecursiveCharacterTextSplitter(
-    #     chunk_size = chunk_size,
-    #     chunk_overlap = chunk_overlap,
-    #     length_function = len,
-    #     separators  = ["\n\n", "\n", " ", ""]
-    # )
-    # return splitter.split_text(text)
-
-
-def embed_chunk(chunk):
-    return ollama.embed(
-        model='mxbai-embed-large', # TODO: change to nomic-embed-text for multilingual embedding
-        input=chunk
-    )["embeddings"]
-
-
-def generate_vectors(dir):
-    # Create a persistent client
-    client = chromadb.PersistentClient(path="./chroma_db")
+    # Prepare chunker to respect dependency injection
+    chunker = RecursiveTokenChunker(
+            chunk_size = 800, 
+            chunk_overlap = 0, 
+            separators = ["\n\n\n", "\n\n", "\n", ".", " ", ""]
+        )
     
-    # Create or get existing collection
+    # Build chain of responsibility
+    # 1. PDFReader: Read the PDF file and extract text
+    # 2. Chunker: Split the text into smaller chunks
+    # 3. Embedder: Generate embeddings for the chunks using a specified language model
+    pipeline = RAGPipelineBuilder().add_PDFReader().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
+
+    # Create a persistent client and 'docs' collection
+    client = chromadb.PersistentClient(path=os.path.join("..", "chroma_db"))
     client.delete_collection(name="docs")
     collection = client.create_collection(name="docs")
 
-    # Populate collection
-    for root, dirs, files in os.walk(dir):
-        i = 0
+    # Recursively walk through the directory and process each PDF file
+    if len(arg) == 1:
+        docs_path = Path(arg[0])
+    else:
+        docs_path = os.path.join("..", "..", "docs", "pdfdocs")
+    for root, dirs, files in os.walk(docs_path):
+        base = 0
         for file in files:
             if file.endswith('.pdf'):
-                print(f'Embedding file {file}...')
                 file_path = os.path.join(root, file)
-                raw_text = extract_pdf(file_path)
-                chunks = chunk_text(raw_text)
 
-                j = 0
-                for chunk in chunks:
-                    print(f'   Embedding chunk {j} of file {file}')
+                # Start chain of operations
+                chunks, embeddings = pipeline.handle(file_path)
+
+                # Add chunks and embeddings to the persistent collection
+                if len(chunks) > 0:
                     collection.add(
-                        ids=str(i),
-                        documents=chunk,
-                        embeddings=embed_chunk(chunk),
-                        metadatas={file : "chunk "+str(j)}
+                        ids=[str(base+number) for number in range(0, len(chunks))],
+                        documents=chunks,
+                        embeddings=embeddings,
+                        metadatas=[{"source": file} for _ in range(len(chunks))]
                     )
-                    i+=1
-                    j+=1
 
-
-if __name__ == "__main__":
-    docs_dir = os.path.join("..", "docs", "pdfdocs")
-    generate_vectors(docs_dir)
+                print(f'Embedded {len(chunks)} chunks from {file}')
+                base+=len(chunks)

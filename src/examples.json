@@ -1,0 +1,18 @@
+{
+    "examples": {
+        "queries": [
+            {
+                "id": 1,
+                "type": "command",
+                "input_en": "Show me the last 3 commits that modified the file app/config.py, including the author and commit message.",
+                "input_it": "Mostarmi gli ultimi 3 commit che hanno modificato il file app/config.py, includendo l'autore e il messaggio del commit.",
+                "expected_command_output": "git log -n 3 --pretty=format:'%h %an %s' -- app/config.py"
+            }
+        ]
+    },
+    "metadata": {
+        "version": "1.0",
+        "last_updated": "2025-05-07",
+        "description": "Collection of example queries and commands for LLM testing"
+    }
+}

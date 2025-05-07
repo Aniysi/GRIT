@@ -1,25 +1,26 @@
 from typing import List
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
 import ollama
 import chromadb
 from pydantic import BaseModel
+import bm25s
+import os
 
 def chunk_text(text, chunk_size=512, chunk_overlap=64):
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size = chunk_size,
-        chunk_overlap = chunk_overlap,
-        length_function = len,
-        separators  = ["\n\n", "\n", " ", ""]
-    )
+    splitter = RecursiveTokenChunker(
+            chunk_size = 800, 
+            chunk_overlap = 0, 
+            separators = ["\n\n\n", "\n\n", "\n", ".", " ", ""]
+        )
     return splitter.split_text(text)
 
 def embed_chunk(chunk):
     return ollama.embed(
-        model='mxbai-embed-large',
+        model='nomic-embed-text',
         input=chunk
     )["embeddings"]
 
-def ask(message_history):
+def ask(messages):
     query = input('>>> ')
 
     chunks = chunk_text(query)
@@ -29,20 +30,36 @@ def ask(message_history):
         query_collection.append(embedded_chunk[0])
 
     # Connect to persistent client
-    client = chromadb.PersistentClient(path="./chroma_db")
+    client = chromadb.PersistentClient(path=os.path.join("..", "chroma_db"))
     collection = client.get_collection(name="docs")
 
-    results = collection.query(
+    corpus = collection.query(
         query_embeddings=query_collection,
-        n_results=3
+        n_results=5
     )
 
+    # # Flatten and convert to list of strings
+    # documents = [doc for sublist in corpus['documents'] for doc in sublist]
+    # corpus_tokens = bm25s.tokenize(documents)
+    # retriver = bm25s.BM25(corpus=documents)  # Change this line to pass documents instead of corpus
+    # retriver.index(corpus_tokens)
+
+    # query_tokens = bm25s.tokenize(query)
+    # try:
+    #     docs, scores = retriver.retrieve(query_tokens, k=min(5, len(documents)))  # Add safety check for k
+    #     print(f"Best result (score: {scores[0, 0]:.2f}): {docs[0, 0]}")
+    # except Exception as e:
+    #     print(f"Warning: Retrieval failed - {str(e)}")
+    #     docs = documents[:1]  # Fallback to first document if retrieval fails
+    #     scores = [[0.0]]
+
     context = ""
-    for docs in results['documents']:
+    for docs in corpus['documents']:
         for doc in docs:
+            print(doc, "\n--------------------------------------------------------\n")
             context += doc + "\n\n"
 
-    message_history.append(
+    messages.append(
             {
                 'role': 'user',
                 'context': context,
@@ -59,17 +76,16 @@ def ask(message_history):
 
     ollama_response = ollama.chat(
         model="qwen3-4B",
-        messages=message_history,
+        messages=messages,
         format=Commands.model_json_schema(),
     )
 
     command = Commands.model_validate_json(ollama_response.message.content)
     print(command)
 
-    return message_history
 
 if __name__ == "__main__":
-    message_history=[
+    system_prompt=[
         {
             'role': 'system',
             'content':  '''You are a Git command assistant. You MUST:
@@ -90,4 +106,4 @@ if __name__ == "__main__":
     ]
     
     while(True):
-        message_history = ask(message_history)
+        ask(system_prompt)

@@ -5,4 +5,8 @@ htmldocs
 #RAG database
 chroma_db
 
+src/embedding/__pycache__
+
+src\embedding\test.py
+
 notes

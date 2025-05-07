@@ -1,7 +1,7 @@
-from PDFReader import PDFReader
-from Chunker import Chunker
-from Embedder import Embedder
-from chunkingLibs.base_chunker import BaseChunker
+from embedding.PDFReader import PDFReader
+from embedding.Chunker import Chunker
+from embedding.Embedder import Embedder
+from embedding.chunkingLibs.base_chunker import BaseChunker
 
 class RAGPipelineBuilder:
     def __init__(self):

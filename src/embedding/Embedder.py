@@ -1,4 +1,4 @@
-from EmbeddingHandler import EmbeddingHandler
+from embedding.EmbeddingHandler import EmbeddingHandler
 
 import ollama
 

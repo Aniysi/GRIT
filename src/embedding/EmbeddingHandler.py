@@ -1,4 +1,4 @@
-from chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
+from embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
 
 from abc import ABC, abstractmethod
 from typing import Any
