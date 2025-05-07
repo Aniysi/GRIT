@@ -11,21 +11,21 @@ class RAGPipelineBuilder:
         if not self.first_handler:
             self.first_handler = PDFReader()
         else:
-            self.first_handler.set_next(PDFReader())
+            self.first_handler.get_last().set_next(PDFReader())
         return self
     
     def add_Chunker(self, chunker: BaseChunker):
         if not self.first_handler:
             self.first_handler = Chunker(chunker)
         else:
-            self.first_handler.set_next(Chunker(chunker))
+            self.first_handler.get_last().set_next(Chunker(chunker))
         return self
     
     def add_Embedder(self, model : str):
         if not self.first_handler:
             self.first_handler = Embedder(model)
         else:
-            self.first_handler.get_next().set_next(Embedder(model))
+            self.first_handler.get_last().set_next(Embedder(model))
         return self
 
     def build(self):

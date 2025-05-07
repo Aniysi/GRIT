@@ -7,8 +7,13 @@ class EmbeddingHandler(ABC):
     def __init__(self):
         self._next_handler = None
     
-    def get_next(self):
-        return self._next_handler
+    def get_last(self):
+        current = self
+        successor = self._next_handler
+        while(successor is not None):
+            current = successor
+            successor = successor._next_handler
+        return current
 
     def set_next(self, handler: 'EmbeddingHandler'):
         self._next_handler = handler
