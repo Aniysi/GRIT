@@ -34,7 +34,7 @@ python docs/convertToPdf.py
 In un momento successivo andrà quindi effettuato l'embedding dei file convertiti, mediante l'esecuzione del comando:
 
 ```bash
-python src/embed.py
+python src/embedding/__init__.py
 ```
 
 attraverso l'ambiente virtuale Python accessibile con il comando:
