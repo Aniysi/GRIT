@@ -1,6 +1,7 @@
 #RAG docs (.html files and .pdf converted files)
 pdfdocs
 htmldocs
+jsondocs
 
 #RAG database
 chroma_db
@@ -11,6 +12,9 @@ src/embedding/chunkingLibs/__pycache__
 
 #RAG test files
 src/embedding/test.py
+
+#BM25 test files
+src/test.py
 
 #Notes
 notes
