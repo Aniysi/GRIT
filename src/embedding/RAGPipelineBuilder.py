@@ -1,32 +1,75 @@
+from embedding.EmbeddingHandler import EmbeddingHandler
 from embedding.PDFReader import PDFReader
 from embedding.Chunker import Chunker
 from embedding.Embedder import Embedder
 from embedding.chunkingLibs.base_chunker import BaseChunker
 
-class RAGPipelineBuilder:
-    def __init__(self):
-        self.first_handler = None
+from enum import Enum, auto
+from abc import ABC, abstractmethod
 
-    def add_PDFReader(self):
-        if not self.first_handler:
-            self.first_handler = PDFReader()
+class BuilderState(Enum):
+    EMPTY = auto()
+    HAS_READER = auto()
+    HAS_CHUNKER = auto()
+    HAS_EMBEDDER = auto()
+
+class AbstractRAGPipelineBuilder(ABC):
+    def __init__(self):
+        self._first_handler = None
+        self._last_handler = None
+        self._state = BuilderState.EMPTY
+
+    def _add_to_chain(self, handler: EmbeddingHandler):
+        if not self._first_handler:
+            self._first_handler = handler
         else:
-            self.first_handler.get_last().set_next(PDFReader())
+            self._last_handler.set_next(handler)
+        self._last_handler = handler
+        return self
+
+class DocumentRAGPipelineBuilder(AbstractRAGPipelineBuilder):
+    def add_PDFReader(self):
+        if self._state != BuilderState.EMPTY:
+            raise ValueError("PDFReader must be added first")
+        self._add_to_chain(PDFReader())
+        self._state = BuilderState.HAS_READER
         return self
     
     def add_Chunker(self, chunker: BaseChunker):
-        if not self.first_handler:
-            self.first_handler = Chunker(chunker)
-        else:
-            self.first_handler.get_last().set_next(Chunker(chunker))
+        if self._state != BuilderState.HAS_READER:
+            raise ValueError("Chunker must be added after PDFReader")
+        self._add_to_chain(Chunker(chunker))
+        self._state = BuilderState.HAS_CHUNKER
         return self
     
-    def add_Embedder(self, model : str):
-        if not self.first_handler:
-            self.first_handler = Embedder(model)
-        else:
-            self.first_handler.get_last().set_next(Embedder(model))
+    def add_Embedder(self, model: str):
+        if self._state != BuilderState.HAS_CHUNKER:
+            raise ValueError("Embedder must be added after Chunker")
+        self._add_to_chain(Embedder(model))
+        self._state = BuilderState.HAS_EMBEDDER
         return self
 
     def build(self):
-        return self.first_handler
+        if self._state != BuilderState.HAS_EMBEDDER:
+            raise ValueError("Pipeline not complete")
+        return self._first_handler
+
+class QueryRAGPipelineBuilder(AbstractRAGPipelineBuilder):
+    def add_Chunker(self, chunker: BaseChunker):
+        if self._state != BuilderState.EMPTY:
+            raise ValueError("Chunker must be added first")
+        self._add_to_chain(Chunker(chunker))
+        self._state = BuilderState.HAS_CHUNKER
+        return self
+    
+    def add_Embedder(self, model: str):
+        if self._state != BuilderState.HAS_CHUNKER:
+            raise ValueError("Embedder must be added after Chunker")
+        self._add_to_chain(Embedder(model))
+        self._state = BuilderState.HAS_EMBEDDER
+        return self
+
+    def build(self):
+        if self._state != BuilderState.HAS_EMBEDDER:
+            raise ValueError("Pipeline not complete")
+        return self._first_handler
