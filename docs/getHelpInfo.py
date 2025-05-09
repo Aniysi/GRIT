@@ -46,38 +46,47 @@ def parse_git_command(command, pdf_path):
     text = ""
     for page in doc:
         text += page.get_text()
-        if "DESCRIPTION" in text and "OPTIONS" in text:
+        if "DESCRIPTION" in text:
             start_idx = text.find("DESCRIPTION\n") + len("DESCRIPTION\n")
-            end_idx = text.find("OPTIONS")
+            sections = ["OPTIONS\n", "Examples\n", "EXAMPLES\n", "INTERACTIVE MODE\n", "EDITING PATCHES\n", "CONFIGURATION\n", "SEE ALSO\n", "GIT\n"]
+            end_idx = -1
+            for possible_end_sequence in sections:
+                if possible_end_sequence in text:
+                    end_idx = text.find(possible_end_sequence)
+                    break
             description = text[start_idx:end_idx].strip() if end_idx != -1 else text[start_idx:].strip()
             break
+
+            # if "OPTIONS" in text:
+            #     start_idx = text.find("DESCRIPTION\n") + len("DESCRIPTION\n")
+            #     end_idx = text.find("OPTIONS")
+            #     description = text[start_idx:end_idx].strip() if end_idx != -1 else text[start_idx:].strip()
+            #     break
+            # elif "Examples\n" in text:
+            #     start_idx = text.find("DESCRIPTION\n") + len("DESCRIPTION\n")
+            #     end_idx = text.find("Examples\n")
+            #     description = text[start_idx:end_idx].strip() if end_idx != -1 else text[start_idx:].strip()
+            #     break
     # print(f"Usage: {usage}")
     # print(f"Description: {description}")
-    return {
-        "command": f"git {command}",
-        "description": description,
-        "usage": usage
-    }
+    if "is not a git command" in usage:
+        return None
+    else:
+        return {
+            "command": f"git {command}",
+            "description": description,
+            "usage": usage
+        }
 
 def save_json(data, json_dir_path=Path(os.getcwd(), "jsondocs")):
     if data:
         # Try to load existing data from the JSON file
         json_file = Path(json_dir_path, data['command'].replace(" ", "-") + ".json")
-        commands_list = []
+        json_dir_path.mkdir(parents=True, exist_ok=True)
         
-        if os.path.exists(json_file):
-            try:
-                with open(json_file, 'r') as file:
-                    commands_list = json.load(file)
-            except json.JSONDecodeError:
-                commands_list = []
-        
-        # Add new command if it's not already in the list
-        commands_list.append(result)
-        
-        # Save updated list back to JSON file
+        # Write the new data to the file
         with open(json_file, 'w') as f:
-            json.dump(commands_list, f, indent=4)
+            json.dump(data, f, indent=4)
 
 
 # Walk through current directory and subdirectories
@@ -87,4 +96,5 @@ for root, dirs, files in os.walk(Path(os.getcwd(), "pdfdocs")):
             pdf_path = os.path.join(root, file)
             command = file.replace('.pdf', '').replace('git-', '').replace('-', ' ')
             result = parse_git_command(command, pdf_path)
-            save_json(result)
+            if result:
+                save_json(result)

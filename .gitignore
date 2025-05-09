@@ -10,11 +10,8 @@ chroma_db
 src/embedding/__pycache__
 src/embedding/chunkingLibs/__pycache__
 
-#RAG test files
-src/embedding/test.py
-
-#BM25 test files
-src/test.py
+#Test files
+*_test.py
 
 #Notes
 notes
