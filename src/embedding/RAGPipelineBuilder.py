@@ -1,5 +1,5 @@
 from embedding.EmbeddingHandler import EmbeddingHandler
-from embedding.PDFReader import PDFReader
+from embedding.Reader import Reader
 from embedding.Chunker import Chunker
 from embedding.Embedder import Embedder
 from embedding.chunkingLibs.base_chunker import BaseChunker
@@ -28,10 +28,10 @@ class AbstractRAGPipelineBuilder(ABC):
         return self
 
 class DocumentRAGPipelineBuilder(AbstractRAGPipelineBuilder):
-    def add_PDFReader(self):
+    def add_Reader(self):
         if self._state != BuilderState.EMPTY:
             raise ValueError("PDFReader must be added first")
-        self._add_to_chain(PDFReader())
+        self._add_to_chain(Reader())
         self._state = BuilderState.HAS_READER
         return self
     

@@ -4,7 +4,7 @@ import fitz
 import unicodedata
 import re
 
-class PDFReader(EmbeddingHandler):
+class Reader(EmbeddingHandler):
     def preprocess(self, text):
         # Normalize Unicode characters and ligatures
         text = unicodedata.normalize('NFKD', text)
@@ -22,3 +22,10 @@ class PDFReader(EmbeddingHandler):
             full_text += self.preprocess(text)
         #print(full_text)
         return super().handle(full_text)
+    
+    # def handle(self, path):
+    #     with open(path, 'r') as file:
+    #         data = json.load(file)
+            
+    #     chunks, embeds = super().handle(unicodedata.normalize('NFKD', data['description']))
+    #     return {"command": data['command'],"usage": data['usage']}, chunks, embeds
