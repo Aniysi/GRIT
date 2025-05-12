@@ -1,18 +1,192 @@
-{
-    "examples": {
-        "queries": [
-            {
-                "id": 1,
-                "type": "command",
-                "input_en": "Show me the last 3 commits that modified the file app/config.py, including the author and commit message.",
-                "input_it": "Mostarmi gli ultimi 3 commit che hanno modificato il file app/config.py, includendo l'autore e il messaggio del commit.",
-                "expected_command_output": "git log -n 3 --pretty=format:'%h %an %s' -- app/config.py"
-            }
+[
+    {
+    "command": "git commit",
+    "examples": [
+        {
+        "command": "git commit",
+        "description": "Voglio salvare i cambiamenti che ho messo in staging creando un nuovo commit.",
+        "keywords": ["salvare", "modifiche", "nuovo commit", "staging", "git commit"]
+        },
+        {
+        "command": "git commit -m \"Fix bug nella funzione di login\"",
+        "description": "Voglio fare un commit con un messaggio chiaro e descrittivo, tutto in un solo comando.",
+        "keywords": ["messaggio", "commit veloce", "descrizione", "singolo comando", "commit"]
+        },
+        {
+        "command": "git commit --amend --no-edit",
+        "description": "Voglio aggiungere nuovi file all’ultimo commit senza cambiare il messaggio già scritto.",
+        "keywords": ["aggiungere", "file", "amend", "senza messaggio", "commit precedente", "modifcare"]
+        },
+        {
+        "command": "git commit -a -m \"Aggiorna documentazione\"",
+        "description": "Voglio fare un commit che include direttamente tutti i file modificati senza passare per lo staging.",
+        "keywords": ["tutti i file", "senza staging", "commit rapido", "modifiche automatiche"]
+        },
+        {
+        "command": "git commit --dry-run",
+        "description": "Voglio controllare cosa verrebbe incluso in un commit, senza eseguirlo davvero.",
+        "keywords": ["verifica", "simulare", "test", "commit", "dry run"]
+        }
         ]
     },
-    "metadata": {
-        "version": "1.0",
-        "last_updated": "2025-05-07",
-        "description": "Collection of example queries and commands for LLM testing"
+    {
+    "command": "git branch",
+    "examples": [
+        {
+        "command": "git branch",
+        "description": "Voglio vedere la lista di tutti i branch locali disponibili nel mio repository.",
+        "keywords": ["vedere", "lista", "branch", "locali", "git branch"]
+        },
+        {
+        "command": "git branch nome-branch",
+        "description": "Voglio creare un nuovo branch per iniziare a lavorare su una nuova funzionalità.",
+        "keywords": ["creare", "nuovo branch", "feature", "iniziare", "lavoro"]
+        },
+        {
+        "command": "git checkout -b nome-branch",
+        "description": "Voglio creare un nuovo branch e passarci subito per iniziare a lavorarci.",
+        "keywords": ["nuovo branch", "checkout", "inizio", "spostarsi", "subito"]
+        },
+        {
+        "command": "git branch -d nome-branch",
+        "description": "Voglio cancellare un branch locale che non mi serve più e che ho già unito.",
+        "keywords": ["cancellare", "branch", "locale", "non serve", "rimuovere"]
+        },
+        {
+        "command": "git branch -D nome-branch",
+        "description": "Voglio forzare la cancellazione di un branch locale anche se non è stato unito.",
+        "keywords": ["forzare", "cancellazione", "branch", "non unito", "eliminare"]
+        },
+        {
+        "command": "git branch -r",
+        "description": "Voglio vedere tutti i branch remoti disponibili nel repository remoto.",
+        "keywords": ["remoti", "vedere", "branch remoti", "repository remoto", "lista"]
+        },
+        {
+        "command": "git branch -a",
+        "description": "Voglio vedere sia i branch locali che quelli remoti in un’unica lista.",
+        "keywords": ["tutti i branch", "locali", "remoti", "elenco completo", "visualizzare"]
+        },
+        {
+        "command": "git branch --merged",
+        "description": "Voglio sapere quali branch sono già stati uniti al branch attuale.",
+        "keywords": ["branch uniti", "merge completato", "controllo", "già unito"]
+        },
+        {
+        "command": "git branch --no-merged",
+        "description": "Voglio vedere i branch che non sono ancora stati uniti al mio branch attuale.",
+        "keywords": ["non uniti", "da unire", "merge mancanti", "controllare"]
+        }
+    ]
+    },
+    {
+    "command": "git add",
+    "examples": [
+        {
+        "command": "git add .",
+        "description": "Voglio aggiungere tutti i file modificati all'area di staging, ma non voglio includere quelli nuovi non tracciati.",
+        "keywords": ["aggiungere", "tutti", "modificati", "escludere", "non tracciati", "staging"]
+        },
+        {
+        "command": "git add '*.js'",
+        "description": "Voglio aggiungere all’area di staging solo i file con estensione .js perché sto lavorando solo su quelli.",
+        "keywords": ["aggiungere", "file js", "staging", "estensione", "filtrare"]
+        },
+        {
+        "command": "git add -p",
+        "description": "Voglio selezionare solo alcune modifiche specifiche dentro un file da aggiungere allo staging.",
+        "keywords": ["aggiungere", "parzialmente", "selezionare", "pezzi", "modifiche", "staging"]
+        },
+        {
+        "command": "git restore --staged nomefile",
+        "description": "Voglio togliere un file dallo staging perché non voglio più includerlo nel prossimo commit.",
+        "keywords": ["rimuovere", "staging", "non committare", "togliere", "restore"]
+        },
+        {
+        "command": "git add nomefile",
+        "description": "Voglio aggiungere un file che è stato eliminato in modo da includere la sua rimozione nel prossimo commit.",
+        "keywords": ["aggiungere", "file eliminato", "tracciare", "rimozione", "commit"]
+        }
+    ]
+    },
+    {
+    "command": "git checkout",
+    "examples": [
+        {
+        "command": "git checkout nome-branch",
+        "description": "Voglio passare a un branch che esiste già per continuare a lavorare lì.",
+        "keywords": ["cambiare branch", "passare", "esistente", "checkout", "spostarsi"]
+        },
+        {
+        "command": "git checkout -b nuovo-branch",
+        "description": "Voglio creare un nuovo branch e iniziare subito a lavorarci.",
+        "keywords": ["creare branch", "nuovo", "iniziare", "checkout", "branch"]
+        },
+        {
+        "command": "git checkout nomefile",
+        "description": "Voglio ripristinare un file modificato riportandolo allo stato dell'ultimo commit.",
+        "keywords": ["ripristinare file", "ultimo commit", "annullare modifiche", "checkout file"]
+        },
+        {
+        "command": "git checkout commit_id -- nomefile",
+        "description": "Voglio vedere una versione precedente di un file senza cambiare branch.",
+        "keywords": ["file vecchio", "versione precedente", "commit specifico", "checkout", "senza cambiare branch"]
+        },
+        {
+        "command": "git checkout HEAD~1",
+        "description": "Voglio tornare temporaneamente al commit precedente per vedere com’era il progetto.",
+        "keywords": ["tornare indietro", "commit precedente", "checkout", "revisione", "HEAD"]
+        },
+        {
+        "command": "git checkout -- .",
+        "description": "Voglio annullare tutte le modifiche locali e riportare i file allo stato dell’ultimo commit.",
+        "keywords": ["annulla tutto", "ripristina file", "checkout", "reset modifiche", "ultimo commit"]
+        }
+    ]
+    },
+    {
+  "command": "git log",
+  "examples": [
+        {
+        "command": "git log --pretty=oneline",
+        "description": "Voglio vedere solo autore e messaggio per ogni commit, in una sola riga.",
+        "keywords": ["log", "autore", "messaggio", "lista commit", "oneline", "storico"]
+        },
+        {
+        "command": "git log --pretty=format:\"%h %ad %s\" --date=short",
+        "description": "Come posso elencare i commit mostrando solo hash abbreviato, data e messaggio?",
+        "keywords": ["hash", "data", "messaggio", "commits", "formato personalizzato", "log"]
+        },
+        {
+        "command": "git log --name-only",
+        "description": "Voglio vedere quali file sono stati modificati in ogni commit.",
+        "keywords": ["file modificati", "log", "nomi file", "commit", "cambiamenti"]
+        },
+        {
+        "command": "git log --author=\"nome\"",
+        "description": "Come faccio a vedere solo i commit fatti da un certo autore?",
+        "keywords": ["autore", "filtra commit", "log per autore", "storico", "git log"]
+        },
+        {
+        "command": "git log --graph --oneline --all",
+        "description": "Voglio vedere il log con una visualizzazione grafica dei branch.",
+        "keywords": ["visualizzazione grafica", "rami", "log", "graph", "commit", "storico"]
+        },
+        {
+        "command": "git log --pretty=format:\"%s\"",
+        "description": "Come posso visualizzare solo i messaggi dei commit, senza dettagli extra?",
+        "keywords": ["solo messaggi", "log", "commit", "descrizione", "formato semplice"]
+        },
+        {
+        "command": "git log --since=\"2023-01-01\" --until=\"2023-12-31\"",
+        "description": "Voglio filtrare il log per commit fatti in una certa data o intervallo di tempo.",
+        "keywords": ["data", "intervallo", "filtro", "storico", "commits", "log"]
+        },
+        {
+        "command": "git log -p nomefile",
+        "description": "Come faccio a vedere l'ultimo commit che ha modificato un certo file?",
+        "keywords": ["ultimo commit", "file specifico", "modifiche", "log dettagliato", "git log"]
+        }
+    ]
     }
-}
+]
