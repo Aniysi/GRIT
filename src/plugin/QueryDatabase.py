@@ -9,5 +9,5 @@ class QueryDatabase(Command):
         self._embeddings = embeddings
 
     def execute(self):
-        return self._DBmanager.query(self._embeddings, 5)
+        return self._DBmanager.query(self._embeddings)
     
