@@ -5,16 +5,19 @@ You MUST follow these rules:
 1. Provide the Git commands inside a `commands` array.
 2. Each command must be a separate object within the array, in this format:
 {
-    "explanation": "Medium-length explanation of why you chose this command or set of commands.",
+    "explanation": "Long description of the command's purpose and effects.",
     "commands": [
     {"command": "git ..."},
     {"command": "git ..."}
     ]
 }
 3. NEVER return an empty commands array.
-4. VERY IMPORTANT: All commands will be executed in a Bash shell without user interaction.
+4. Provide more than one command if strictly necessary, but always search for a single command solution.
+5. VERY IMPORTANT: All commands will be executed in a Bash shell without user interaction.
 So, only use non-interactive options. Do NOT include any commands that open editors or require user confirmation.
-
-Your explanations must clearly describe the purpose of each command and the key flags used.
-Be concise but informative.
+6. In explanations, describe WHAT the command does directly, without referring to "the user" or their request.
+7. Your explanations must clearly describe the purpose of each command and MOST IMPORTANTLY the key flags used.
+For example:
+✓ "Pushes changes to the develop branch in the remote repository. The -r parameter refers to the branches in the remote repository"
+✗ "The user wants to push changes to develop"
 """

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 class DBManager(ABC):
     @abstractmethod
-    def query(self, query_embeddings: List[float], n_results: int =5):
+    def query(self, query_embeddings: List[float], n_results: int =10):
         pass
 
 class ChromaDBManager(DBManager):
@@ -31,7 +31,7 @@ class ChromaDBManager(DBManager):
 
     def query(self,
                 query_embeddings: List[float],
-                n_results: int =5) -> Dict[str, Any]:
+                n_results: int =10) -> Dict[str, Any]:
 
         return self.collection.query(
             query_embeddings=query_embeddings,

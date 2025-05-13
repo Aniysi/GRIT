@@ -6,18 +6,17 @@ from embedding.RAGPipelineBuilder import QueryRAGPipelineBuilder
 from embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
 from plugin.QueryDatabase import QueryDatabase
 from plugin.GetSparseEmbeddings import GetSparseEmbeddings
+from plugin.ComputeRRF import ComputeRRF
+from plugin.QueryLLM import QueryLLM
 
 import os
 
-def print_results(closest_chunks):
-    print("\nSearch results:")
-    for i in range(len(closest_chunks['documents'][0])):
-        print(f"\n{i+1}. Document: {closest_chunks['documents'][0][i]}")
-        print(f"   Command: {closest_chunks['metadatas'][0][i]['command']}")
-        print(f"   Keywords: {closest_chunks['metadatas'][0][i]['keywords']}")
-        print(f"   Distance: {closest_chunks['distances'][0][i]:.4f}")
-        print(f"   Sparse distance: {closest_chunks['sparse_distances'][i]:.4f}")
-        print("   " + "-"*80)
+def print_results(results):
+    print("\nTop", len(results['command'][0]), "Results:")
+    for i in range(len(results['command'][0])):
+        print(f"\n{i+1}. Command: {results['command'][0][i]}")
+        print(f"   Description: {results['description'][0][i]}")
+        print(f"   RRF Score: {results['rrf_scores'][i]}")
 
 class CreateGitCommand(CompositeCommand):
     def execute(self):
@@ -50,7 +49,20 @@ class CreateGitCommand(CompositeCommand):
         # Get related chunks sparse embeddings
         closest_chunks = GetSparseEmbeddings(closest_chunks, query).execute()
 
-        print_results(closest_chunks)
+        # Compute reciprocal rank fusion (RRF) scores
+        results = ComputeRRF(closest_chunks).execute()
+        #print_results(results)
+
+        # Create and append new message
+        msgs.append(CreateMessage(Role.User, query, "Ecco alcuni comandi che potresti trovare utili per eseguire questa query "+str(results)).execute())
+
+        # Query LLM
+        response = QueryLLM("qwen3-4B", msgs).execute() 
+        print("QWEN: ", response.explanation, "\n\nCommands:")
+        for command in response.commands:
+            print(" - ",command.command)
+
+        #print_results(closest_chunks)
 
 
 
