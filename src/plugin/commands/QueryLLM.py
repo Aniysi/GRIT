@@ -1,5 +1,5 @@
-from plugin.BaseCommand import Command
-from plugin.ResponseStructure import Response
+from plugin.commands.BaseCommand import Command
+from plugin.utils.ResponseStructure import Response
 import json
 import ollama
 

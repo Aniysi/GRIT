@@ -1,4 +1,4 @@
-from plugin.CreateGitCommand import CreateGitCommand
+from plugin.commands.CreateGitCommand import CreateGitCommand
 
 command = CreateGitCommand()
 command.execute()

@@ -1,5 +1,5 @@
-from plugin.BaseCommand import Command
-from plugin.DBManager import DBManager
+from plugin.commands.BaseCommand import Command
+from database.DBManager import DBManager
 
 from typing import List
 

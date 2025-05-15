@@ -1,9 +1,9 @@
-from plugin.BaseCommand import Command
+from plugin.commands.BaseCommand import Command
 
 from typing import List
 
 class ComputeRRF(Command):
-    def __init__(self, docs: List, n_res: int =5, k: int =60):
+    def __init__(self, docs: List, n_res: int =10, k: int =60):
         self._documents = docs
         self._n_results = n_res
         self._k = k

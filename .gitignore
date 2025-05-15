@@ -7,10 +7,7 @@ jsondocs
 chroma_db
 
 #Pycache
-src/embedding/__pycache__
-src/embedding/chunkingLibs/__pycache__
-src/plugin/__pycache__
-src/plugin/prompts/__pycache__
+**/__pycache__/
 
 #Test files
 *_test.py

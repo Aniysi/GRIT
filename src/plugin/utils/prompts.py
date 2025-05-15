@@ -1,3 +1,5 @@
+GENERATION_LLM = "qwen3-4B"
+
 CREATE_COMMAND_SYSTEM_PROMPT = """
 You are a Git expert assistant. Your task is to generate Git commands in response to natural language requests and 
 correct them according to successive user requests.

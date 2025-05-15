@@ -31,7 +31,7 @@ class ChromaDBManager(DBManager):
 
     def query(self,
                 query_embeddings: List[float],
-                n_results: int =10) -> Dict[str, Any]:
+                n_results: int =20) -> Dict[str, Any]:
 
         return self.collection.query(
             query_embeddings=query_embeddings,

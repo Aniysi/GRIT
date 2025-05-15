@@ -1,4 +1,4 @@
-from plugin.BaseCommand import Command
+from plugin.commands.BaseCommand import Command
 
 from enum import Enum
 
