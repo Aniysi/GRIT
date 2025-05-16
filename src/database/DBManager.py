@@ -2,6 +2,7 @@ import chromadb
 import os
 from typing import List, Dict, Any
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 class DBManager(ABC):
     @abstractmethod
@@ -9,9 +10,17 @@ class DBManager(ABC):
         pass
 
 class ChromaDBManager(DBManager):
-    def __init__(self, db_path: str, collection_name: str):
-        self.client = chromadb.PersistentClient(path=db_path)
-        self.collection = self.client.get_or_create_collection(collection_name)
+    def __init__(self, db_path: Path, collection_name: str):
+        try:
+            self.client = chromadb.PersistentClient(path=str(db_path))
+            if not self.client:
+                raise ConnectionError("Failed to create ChromaDB client")
+            self.collection = self.client.get_collection(collection_name)
+            if not self.collection:
+                raise ConnectionError(f"Failed to get collection: {collection_name}")
+        except Exception as e:
+            print(f"Error initializing ChromaDB: {str(e)}")
+            raise
 
     def add_documents(self, 
                      documents: List[str],

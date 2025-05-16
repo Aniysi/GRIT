@@ -17,7 +17,7 @@ class CreateMessage(Command):
         if self.__context == "":
             return {
                 "role": self.__role.name,
-                "content": self.__prompt
+                "content": self.__prompt + "/no_think"
             }
         else:
             polished_context = self.__context.replace("np.float64", "")

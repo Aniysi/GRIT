@@ -7,28 +7,40 @@ import re
 class ResponseCmd(BaseModel):
         command: str
 
-        # TODO: Make sure the first split doesn't split inside of ""
-        def getCommandList(self):
-                args = self.command.split()
-                # Flag noti che non devono contenere virgolette esterne
-                regex_flags = ['--author', '--committer', '--grep']
+        def getCmdString(self) -> str:
+            parts = self.command.strip().split()
+            result = []
+            i = 0
 
-                cleaned_args = []
-                for arg in args:
-                    for flag in regex_flags:
-                        if arg.startswith(flag + '='):
-                            # Estraggo il valore
-                            value = arg.split('=', 1)[1]
-                            # Rimuovo virgolette solo se racchiudono l'intero valore
-                            if re.match(r'^".*"$', value) or re.match(r"^'.*'$", value):
-                                value = value[1:-1]
-                            cleaned_args.append(f"{flag}={value}")
-                            break
-                    else:
-                        # Lascia gli altri argomenti invariati (es. --pretty=format:"%h %an")
-                        cleaned_args.append(arg)
+            while i < len(parts):
+                part = parts[i]
 
-                return cleaned_args
+                # Match --flag=value
+                match = re.match(r'(--[a-zA-Z0-9\-]+)=(.+)', part)
+                if match:
+                    flag, value = match.groups()
+
+                    # Inizia ad accumulare i "valori", potenzialmente multipli
+                    values = [value]
+                    i += 1
+
+                    # Continua ad aggiungere finché non trovi un nuovo flag
+                    while i < len(parts) and not parts[i].startswith('--'):
+                        values.append(parts[i])
+                        i += 1
+
+                    full_value = ' '.join(values)
+
+                    # Aggiungi virgolette solo se non già presenti
+                    if not (full_value.startswith('"') and full_value.endswith('"')):
+                        full_value = f'"{full_value}"'
+
+                    result.append(f"{flag}={full_value}")
+                else:
+                    result.append(part)
+                    i += 1
+
+            return ' '.join(result)
 
 
 class Response(BaseModel):

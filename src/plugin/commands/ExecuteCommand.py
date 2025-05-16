@@ -13,7 +13,8 @@ class ExecuteCommand(Command):
 
     def execute(self):
         for command in self._commands:
-            cmd = command.getCommandList()
+            cmd = command.getCmdString()
+            print(cmd)
             try:
                 result = subprocess.run(
                     cmd,

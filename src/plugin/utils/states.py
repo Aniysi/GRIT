@@ -14,7 +14,7 @@ from plugin.commands.ExecuteCommand import ExecuteCommand
 from abc import ABC, abstractmethod
 from typing import List
 import os
-
+from pathlib import Path
 
 class State(ABC):
     @abstractmethod
@@ -56,7 +56,8 @@ class InitialState(State):
         pipeline = QueryRAGPipelineBuilder().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
         _, embeddings = pipeline.handle(self._query)
         # Get related chunks dense embeddings
-        manager = ChromaDBManager(os.path.join("..", "test_db"), "test-nomic")
+        DBpath = Path("C:/Users/leona/Desktop/Unipd/Terzo anno/Stage/project/prova")
+        manager = ChromaDBManager(DBpath, "test-nomic")
         closest_chunks = QueryDatabase(manager, embeddings).execute()
         # Get related chunks sparse embeddings
         closest_chunks = GetSparseEmbeddings(closest_chunks, self._query).execute()
@@ -104,7 +105,7 @@ class ExecutionState(State):
 
         # Execute all commands passed
         exec_report = ExecuteCommand(self._commands).execute()
-
+        #TODO: handle better
         if exec_report.returncode == 0:
             self._context.changeState(InitialState(self._context))
         else: 

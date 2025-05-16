@@ -13,7 +13,7 @@ class ComputeRRF(Command):
         sorted_indices = sorted(range(len(rrf_scores)), key=lambda k: rrf_scores[k], reverse=True)[:self._n_results]
         
         results = {
-            "command": [[self._documents['metadatas'][0][i]['command'] for i in sorted_indices]],
+            "command": [[self._documents['metadatas'][0][i]['full_command'] for i in sorted_indices]],
             "description": [[self._documents['documents'][0][i] for i in sorted_indices]],
             "rrf_scores": [rrf_scores[i] for i in sorted_indices]
         }
