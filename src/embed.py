@@ -1,92 +1,50 @@
 from embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
-from embedding.RAGPipelineBuilder import DocumentRAGPipelineBuilder
+from embedding.RAGPipelineBuilder import QueryRAGPipelineBuilder
 
 import os
 import chromadb
 import sys
 from pathlib import Path
+import json
 
 if __name__ == "__main__":
 
-    arg = sys.argv[1:]
-    if len(arg) > 1:
-        print("Usage: python src/embedding/__init__.py <path_to_pdf_directory>")
-        sys.exit(1)
-
-    # Prepare chunker to respect dependency injection
-    chunker = RecursiveTokenChunker(
-            chunk_size = 400, 
-            chunk_overlap = 0, 
-            separators = ["\n\n\n", "\n\n", "\n", ".", " ", ""]
-        )
-    
-    # Build chain of responsibility
-    # 1. PDFReader: Read the PDF file and extract text
-    # 2. Chunker: Split the text into smaller chunks
-    # 3. Embedder: Generate embeddings for the chunks using a specified language model
-    pipeline = DocumentRAGPipelineBuilder().add_Reader().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
-
     # Create a persistent client and 'docs' collection
-    client = chromadb.PersistentClient(path=os.path.join("..", "chroma_db"))
-    #client.delete_collection(name="docs400token")
-    collection = client.create_collection(name="docs400token")
+        DBpath  = os.path.join("..", "prova")
+        client = chromadb.PersistentClient(path=DBpath)
+        #client.delete_collection(name="test-nomic")
+        collection_nomic = client.create_collection(name="test-nomic")
 
-    # Recursively walk through the directory and process each PDF file
-    if len(arg) == 1:
-        docs_path = Path(arg[0])
-    else:
-        docs_path = os.path.join("..", "..", "docs", "pdfdocs")
-    for root, dirs, files in os.walk(docs_path):
-        base = 0
-        for file in files:
-            if file.endswith('.pdf'):
-                file_path = os.path.join(root, file)
+        chunker = RecursiveTokenChunker(
+            chunk_size = 200, 
+            chunk_overlap = 0, 
+            separators = [ "\n", ".", " ", ""]
+        )
+        pipeline_nomic = QueryRAGPipelineBuilder().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
+        # Read the JSON file
+        with open("./examples.json", "r") as file:
+            data = json.load(file)
 
-                # Start chain of operations
-                chunks, embeddings = pipeline.handle(file_path)
-
-                # Add chunks and embeddings to the persistent collection
-                if len(chunks) > 0:
-                    collection.add(
-                        ids=[str(base+number) for number in range(0, len(chunks))],
+        # Process each element's description through the pipeline
+        for command_group in data:
+            base_command = command_group["command"]
+            for example in command_group["examples"]:
+                if "description" in example:
+                    chunks, embeddings = pipeline_nomic.handle(example["description"])
+                    
+                    # Create metadata for each chunk
+                    metadatas = [{
+                        "command": base_command,
+                        "full_command": example["command"],
+                        "keywords": " ".join(example["keywords"])  # Join keywords into a string
+                    } for _ in range(len(chunks))]
+                    
+                    # Add to collection with enhanced metadata
+                    collection_nomic.add(
+                        ids=[f"{base_command}_{i}" for i in range(len(chunks))],
                         documents=chunks,
                         embeddings=embeddings,
-                        metadatas=[{"source": file} for _ in range(len(chunks))]
+                        metadatas=metadatas
                     )
-
-                print(f'Embedded {len(chunks)} chunks from {file}')
-                base+=len(chunks)
-
-
-
-
-
-#---------------------------------------------------JSON VERSION---------------------------------------------------#
-# #client.delete_collection(name="docs")
-#     collection = client.create_collection(name="json_docs")
-
-#     # Recursively walk through the directory and process each PDF file
-#     if len(arg) == 1:
-#         docs_path = Path(arg[0])
-#     else:
-#         docs_path = os.path.join("..", "..", "docs", "jsondocs")
-#     for root, dirs, files in os.walk(docs_path):
-#         base = 0
-#         for file in files:
-#             if file.endswith('.json'):
-#                 file_path = os.path.join(root, file)
-
-#                 # Start chain of operations
-#                 metadata, chunks, embeddings = pipeline.handle(file_path)
-
-#                 # Add chunks and embeddings to the persistent collection
-#                 if len(chunks) > 0:
-#                     collection.add(
-#                         ids=[str(base+number) for number in range(0, len(chunks))],
-#                         documents=chunks,
-#                         embeddings=embeddings,
-#                         metadatas=[metadata for _ in range(len(chunks))]
-#                     )
-
-#                 print(f'Embedded {len(chunks)} chunks from {file} relative to command {metadata["command"]}')
-#                 base+=len(chunks)
+                    
+                    print(f'Embedded {len(chunks)} chunks from description of command: {example["command"]}')

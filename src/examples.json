@@ -188,5 +188,188 @@
         "keywords": ["ultimo commit", "file specifico", "modifiche", "log dettagliato", "git log"]
         }
     ]
+    },
+    {
+    "command": "git remote",
+    "examples": [
+        {
+        "command": "git remote -v",
+        "description": "Come posso vedere tutti i remoti configurati nel mio repository?",
+        "keywords": ["remoti", "elenco", "origin", "url", "git remote", "visualizza"]
+        },
+        {
+        "command": "git remote add origin https://example.com/repo.git",
+        "description": "Voglio aggiungere un nuovo remoto con un URL specifico.",
+        "keywords": ["aggiungi", "remoto", "origin", "nuovo", "url", "git remote add"]
+        },
+        {
+        "command": "git remote rename origin upstream",
+        "description": "Come faccio a rinominare un remoto esistente?",
+        "keywords": ["rinomina", "remoto", "origin", "upstream", "git remote rename"]
+        },
+        {
+        "command": "git remote set-url origin https://example.com/nuovo.git",
+        "description": "Voglio cambiare l’URL associato a un remoto.",
+        "keywords": ["cambiare", "url", "remoto", "origin", "modifica", "git remote set-url"]
+        },
+        {
+        "command": "git remote remove origin",
+        "description": "Come posso rimuovere un origin remoto che non uso più?",
+        "keywords": ["rimuovere", "remoto", "origin", "elimina", "git remote remove"]
+        },
+        {
+        "command": "git remote get-url origin",
+        "description": "Come faccio a vedere l’URL del repository remoto configurato?",
+        "keywords": ["vedere", "url", "remoto", "origin", "git remote get-url"]
+        }
+    ]
+    },
+    {
+    "command": "git status",
+    "examples": [
+        {
+        "command": "git status",
+        "description": "Come posso vedere quali file sono stati modificati ma non ancora aggiunti allo staging. Voglio controllare lo stato attuale del mio repository",
+        "keywords": ["modificati", "non in area staging", "stato", "git status", "file modificati", "controlla stato", "verifica", "conflitti"]
+        }
+    ]
+    },
+    {
+    "command": "git diff",
+    "examples": [
+        {
+        "command": "git diff",
+        "description": "Come posso vedere le modifiche fatte rispetto all’ultimo commit?",
+        "keywords": ["differenze", "ultimo commit", "modifiche locali", "non in staging", "git diff", "differenze"]
+        },
+        {
+        "command": "git diff <branch1> <branch2>",
+        "description": "Voglio confrontare le modifiche tra due branch diversi.",
+        "keywords": ["confronto", "branch", "differenze tra branch", "git diff", "versioni"]
+        },
+        {
+        "command": "git diff --staged",
+        "description": "Come faccio a vedere solo le modifiche già aggiunte allo staging?",
+        "keywords": ["staging", "modifiche aggiunte", "area di staging", "confronto", "git diff --staged"]
+        },
+        {
+        "command": "git diff path/to/file",
+        "description": "Voglio visualizzare le modifiche in un file specifico.",
+        "keywords": ["modifiche file", "singolo file", "diff su file", "git diff", "visualizzare cambiamenti", "differenze"]
+        },
+        {
+        "command": "git diff <commit1> <commit2>",
+        "description": "Come posso confrontare due commit per vedere cosa è cambiato?",
+        "keywords": ["differenze commit", "confronto", "versioni diverse", "git diff", "contenuto cambiato", "differenze"]
+        },
+        {
+        "command": "git diff origin/main",
+        "description": "Voglio vedere le differenze tra la mia copia locale e il ramo remoto.",
+        "keywords": ["remoto", "confronto", "differenze", "origin", "git diff", "modifiche non pushate"]
+        }
+    ]
+    },
+    {
+    "command": "git reset",
+    "examples": [
+        {
+        "command": "git reset HEAD <file>",
+        "description": "Come posso rimuovere un file dallo staging senza perdere le modifiche?",
+        "keywords": ["rimuovere da staging", "senza perdere modifiche", "git reset", "HEAD", "file singolo", "togliere"]
+        },
+        {
+        "command": "git reset --soft HEAD~1",
+        "description": "Voglio annullare l’ultimo commit ma mantenere i file modificati.",
+        "keywords": ["annullare commit", "mantenere modifiche", "soft reset", "git reset", "HEAD~1"]
+        },
+        {
+        "command": "git reset --hard <commit>",
+        "description": "Come faccio a riportare il repository a uno stato precedente, cancellando anche le modifiche locali?",
+        "keywords": ["ripristino", "cancellare modifiche locali", "reset completo", "git reset", "hard", "stato"]
+        },
+        {
+        "command": "git reset --hard HEAD~2",
+        "description": "Voglio annullare gli ultimi due commit e riportare tutto com’era prima.",
+        "keywords": ["annulla", "annullare", "ripristinare", "ripristina", "commit", "reset totale", "git reset", "hard"]
+        },
+        {
+        "command": "git reset <file1> <file2>",
+        "description": "Come posso togliere dallo staging solo alcuni file, non tutti?",
+        "keywords": ["rimuovere da staging", "rimuovi", "solo", "file", "git reset", "parziale", "file specifici"]
+        }
+    ]
+    },{
+    "command": "git revert",
+    "examples": [
+        {
+        "command": "git revert <commit>",
+        "description": "Come posso annullare un commit già pubblicato senza riscrivere la cronologia?",
+        "keywords": ["annulla", "commit", "pubblicato", "revert", "cronologia", "errore", "ripristina", "push", "remote"]
+        },
+        {
+        "command": "git revert <commit1> <commit2> <commit3>",
+        "description": "Come faccio a fare il revert di più commit in una volta sola?",
+        "keywords": ["revert", "più", "commit", "annulla", "modifiche", "serie", "storico", "rollback", "ripeti", "correggi"]
+        },
+        {
+        "command": "git revert -m 1 <merge_commit>",
+        "description": "Voglio annullare un merge commit senza cancellare la cronologia dei branch.",
+        "keywords": ["merge", "revert", "annulla", "commit", "cronologia", "branch", "unione", "ripristina", "errore", "conflict"]
+        }
+    ]
+    },
+    {
+    "command": "git merge",
+    "examples": [
+        {
+        "command": "git merge feature-branch",
+        "description": "Come posso unire un branch di funzionalità nel branch principale?",
+        "keywords": ["unisci", "merge", "branch", "main", "integra", "cambia", "modifica", "aggiungi", "sviluppo"]
+        },
+        {
+        "command": "git merge --ff-only feature-branch",
+        "description": "Voglio eseguire un merge veloce solo se non ci sono divergenze.",
+        "keywords": ["merge", "veloce", "ff", "fast", "forward", "senza", "conflitti", "automatico", "unisci", "differenza", "divergenze"]
+        },
+        {
+        "command": "git merge --no-commit --no-ff feature-branch",
+        "description": "Come posso vedere in anticipo cosa cambierà se faccio un merge?",
+        "keywords": ["merge", "preview", "cambiamenti", "verifica", "no commit", "controlla", "simula", "diff", "modifiche", "stato"]
+        }
+    ]
+    },
+    {
+    "command": "git push",
+    "examples": [
+        {
+        "command": "git push",
+        "description": "Come posso inviare i miei commit locali al ramo remoto?",
+        "keywords": ["push", "invia", "commit", "remoto", "upload", "pubblica", "carica", "branch", "git", "origin"]
+        },
+        {
+        "command": "git push -u origin nome-branch",
+        "description": "Voglio fare il push di un nuovo branch al repository remoto.",
+        "keywords": ["push", "nuovo", "branch", "remoto", "pubblica", "origin", "upload", "traccia", "upstream", "invio"]
+        },
+        {
+        "command": "git push --force",
+        "description": "Come faccio a forzare un push sovrascrivendo i cambiamenti remoti?",
+        "keywords": ["push", "forza", "sovrascrivi", "force", "remoto", "override", "commit", "conflitto", "errore", "problema"]
+        },
+        {
+        "command": "git push origin tag-nome",
+        "description": "Voglio fare il push solo di un tag specifico.",
+        "keywords": ["push", "tag", "remoto", "pubblica", "specifico", "versione", "rilascio", "git", "origin", "carica"]
+        },
+        {
+        "command": "git push origin --delete nome-branch",
+        "description": "Come posso eliminare un branch remoto che non mi serve più?",
+        "keywords": ["elimina", "branch", "remoto", "cancella", "push", "delete", "origin", "rimuovi", "nome", "git"]
+        }
+    ]
     }
+
+    
+
+
 ]
