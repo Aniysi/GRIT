@@ -78,7 +78,7 @@ class InitialState(State):
         while True:
             if self._query.startswith("/"):
                 if self._query == "/exec":
-                    self._context.changeState(ExecutionState(self._context, response.commands))
+                    self._context.changeState(ExecutionState(self._context, response))
                     break
                 elif self._query.startswith("/fix"):
                     self._context.changeState(RefinementState(self._context, self._query[5:]))
@@ -95,16 +95,16 @@ class InitialState(State):
 
 
 class ExecutionState(State):
-    def __init__(self, context, commands):
+    def __init__(self, context, response):
         self._context = context
-        self._commands = commands
+        self._response = response
 
     def handle(self):
         # Retrive messages from context
         messages = self._context.getMessages()
 
         # Execute all commands passed
-        exec_report = ExecuteCommand(self._commands).execute()
+        exec_report = ExecuteCommand(self._response).execute()
         #TODO: handle better
         if exec_report.returncode == 0:
             self._context.changeState(InitialState(self._context))
@@ -142,7 +142,7 @@ class RefinementState(State):
         while True:
             if self._query.startswith("/"):
                 if self._query == "/exec":
-                    self._context.changeState(ExecutionState(self._context, response.commands))
+                    self._context.changeState(ExecutionState(self._context, response))
                     break
                 elif self._query.startswith("/fix"):
                     # Instead of creating a new state, just update the current query
