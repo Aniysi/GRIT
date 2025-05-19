@@ -1,2 +1,2 @@
 @echo off
-"%~dp0..\venv\Scripts\python.exe" -X frozen_modules "%~dp0query.py" %*
+"%~dp0..\venv\Scripts\python.exe" "%~dp0query.py" %*
