@@ -9,6 +9,8 @@ class Role(Enum):
 
 class CreateMessage(Command):
     def __init__(self, role: Role, prompt: str, context: str = ""):
+        if not isinstance(role, Role):
+            raise TypeError(f"Param role must be a Role enum, not {type(role)}")
         self.__role = role
         self.__prompt = prompt
         self.__context = context
