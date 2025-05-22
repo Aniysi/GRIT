@@ -6,3 +6,4 @@ chromadb
 rank_bm25
 pytest
 pytest-cov
+GitPython

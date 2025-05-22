@@ -81,8 +81,8 @@ class InitialState(State):
                 if self._query == "/exec":
                     self._context.changeState(ExecutionState(self._context, response))
                     break
-                elif self._query.startswith("/fix"):
-                    self._context.changeState(RefinementState(self._context, self._query[5:]))
+                elif self._query.startswith("/refine"):
+                    self._context.changeState(RefinementState(self._context, self._query[8:]))
                     break
                 else:
                     print("Unknown command")
@@ -145,9 +145,9 @@ class RefinementState(State):
                 if self._query == "/exec":
                     self._context.changeState(ExecutionState(self._context, response))
                     break
-                elif self._query.startswith("/fix"):
+                elif self._query.startswith("/refine"):
                     # Instead of creating a new state, just update the current query
-                    self._query = self._query
+                    self._query = self._query[8:]
                     # Process the new query in the current state
                     self.handle()
                     break
