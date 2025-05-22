@@ -157,17 +157,15 @@ Se l'esecuzione fallisce, GRIT stamperà il messaggio d'errore restituito dal si
 
 GRIT genererà una nuova versione corretta del comando precedente, basandosi sull'errore restituito.
 
-### 4.2.2 - Correzione mirata con parametro `<query>`
+### 4.2.2 - Raffinamento del comando
 
-È possibile anche specificare direttamente una modifica desiderata al comando attraverso:
+È possibile anche indicare direttamente al modello come rifinire il comando generato secondo le proprie necessità attraverso il comando:
 
 ```bash
-/fix <query>
+/refine <query>
 ```
 
 Dove `<query>` è una descrizione in linguaggio naturale delle modifiche da applicare (es. *"rimuovi il flag --force"* o *"cambia il nome del branch in develop"*).
-
->Importante: il comando `/fix <query>` può essere utilizzato solo se non è stato eseguito un `/exec` fallito. In caso di errore durante l'esecuzione, è necessario usare semplicemente `/fix`, senza parametri, poichè verrà automaticamente passato come parametro l'errore catturato in fase di esecizione.
 
 ### 4.2.3 - Terminare la sessione
 
