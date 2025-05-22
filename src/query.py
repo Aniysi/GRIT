@@ -1,4 +1,8 @@
 from plugin.commands.CreateGitCommand import CreateGitCommand
 
-command = CreateGitCommand()
-command.execute()
+def main():
+    command = CreateGitCommand()
+    command.execute()
+
+if __name__ == "__main__":
+    main()
