@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class Command(ABC):
     """
-    Abstract base class for Grit commands.
+    Abstract base class for Gini commands.
     """
 
     @abstractmethod

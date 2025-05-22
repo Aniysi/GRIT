@@ -18,7 +18,7 @@ def main():
     if len(args) == 1 and args[0] == 'cmd':
         query.main()
     else:
-        print(Fore.RED + "Error: not a Grit command" + Style.RESET_ALL, file=sys.stderr)
+        print(Fore.RED + "Error: not a Gini command" + Style.RESET_ALL, file=sys.stderr)
         sys.exit(1)  # Exit with error code
 
 if __name__ == "__main__":

@@ -1,15 +1,15 @@
-# GRIT
+# Gini
 
 ## 1 - Introduzione
 
-**GRIT** è un plugin per Git scritto in **Python**, pensato per semplificare l'interazione con Git attraverso l'uso del linguaggio naturale. Il plugin sfrutta le potenzialità dei **LLM (Large Language Models)** per:
+**Gini** è un plugin per Git scritto in **Python**, pensato per semplificare l'interazione con Git attraverso l'uso del linguaggio naturale. Il plugin sfrutta le potenzialità dei **LLM (Large Language Models)** per:
 
 - Generare comandi Git a partire da descrizioni in linguaggio naturale fornite dall’utente;
 - Creare commenti di commit templatizzati, basati sulle modifiche effettivamente apportate alla codebase e su eventuali indicazioni dell’utente.
 
 ## 2 - Requisiti Tecnologici
 
-Per utilizzare **GRIT** in modo corretto ed efficiente, è necessario che il sistema in uso soddisfi i seguenti requisiti hardware e software.
+Per utilizzare **Gini** in modo corretto ed efficiente, è necessario che il sistema in uso soddisfi i seguenti requisiti hardware e software.
 
 ### Requisiti Software
 
@@ -42,7 +42,7 @@ Le seguenti librerie devono essere installate nell’ambiente Python per garanti
 
 ### 3.1 - Scarica il progetto
 
-È sufficiente scaricare l’ultima **release** disponibile dal [repository GitHub](<https://github.com/Aniysi/GRIT>) (assicurati che includa le cartelle `src/` e `chroma_db/`).
+È sufficiente scaricare l’ultima **release** disponibile dal [repository GitHub](<https://github.com/Aniysi/Gini>) (assicurati che includa le cartelle `src/` e `chroma_db/`).
 
 
 ### 3.2 - Posiziona i file
@@ -87,7 +87,7 @@ Alternativamente è possibile aggiungere la cartella `src/` alle variabili di si
 
 ### 3.4 - Setup dell’Ambiente Virtuale Python
 
-Per garantire l’isolamento delle dipendenze e un'esecuzione stabile del plugin **GRIT**, si consiglia di configurare un **ambiente virtuale Python** all’interno della cartella `src/`. Di seguito è indicato come fare.
+Per garantire l’isolamento delle dipendenze e un'esecuzione stabile del plugin **Gini**, si consiglia di configurare un **ambiente virtuale Python** all’interno della cartella `src/`. Di seguito è indicato come fare.
 
 1. Posizionati nella cartella in cui sono stati precedentemente estratti i file ([Vedi sezione 3.2](#32)). La cartella dovrebbe avere la seguente struttura:
 
@@ -118,21 +118,21 @@ pip install -r requirements.txt
 
 ## 4 - Utilizzo del Plugin
 
-Il plugin **GRIT** consente l'interazione con un modello linguistico (LLM) tramite richieste in linguaggio naturale, che vengono interpretate e convertite in comandi Git eseguibili.
+Il plugin **Gini** consente l'interazione con un modello linguistico (LLM) tramite richieste in linguaggio naturale, che vengono interpretate e convertite in comandi Git eseguibili.
 
 ### 4.1 - Avvio
 
-Una volta completata la configurazione e aggiunta la directory `src/` al `Path` di sistema, è possibile avviare GRIT da qualsiasi terminale e da qualsiasi posizione del file system Windows. Per avviare il plugin, è sufficiente digitare:
+Una volta completata la configurazione e aggiunta la directory `src/` al `Path` di sistema, è possibile avviare Gini da qualsiasi terminale e da qualsiasi posizione del file system Windows. Per avviare il plugin, è sufficiente digitare:
 
 ```bash
-grit
+gini cmd
 ```
 
 e premere invio.
 
 ### 4.2 - Modalità di utilizzo
 
-All'avvio, GRIT entra in una modalità interattiva (chat) con il modello LLM. L'utente può digitare richieste in linguaggio naturale, come ad esempio: *crea un nuovo branch chiamato "feature/login"*.
+All'avvio, Gini entra in una modalità interattiva (chat) con il modello LLM. L'utente può digitare richieste in linguaggio naturale, come ad esempio: *crea un nuovo branch chiamato "feature/login"*.
 
 Il modello restituirà un comando Git coerente con la richiesta, insieme a una breve spiegazione.
 
@@ -140,14 +140,14 @@ Il modello restituirà un comando Git coerente con la richiesta, insieme a una b
 
 ### 4.2.1 - Esecuzione dei comandi
 
-Dopo che GRIT ha proposto un comando Git, è possibile eseguirlo utilizzando il comando:
+Dopo che Gini ha proposto un comando Git, è possibile eseguirlo utilizzando il comando:
 
 ```bash
 /exec
 ```
 
 Se l'esecuzione ha successo, il terminale tornerà alla modalità di attesa per una nuova richiesta.
-Se l'esecuzione fallisce, GRIT stamperà il messaggio d'errore restituito dal sistema. A quel punto, l'utente può:
+Se l'esecuzione fallisce, Gini stamperà il messaggio d'errore restituito dal sistema. A quel punto, l'utente può:
  - Inviare una nuova richiesta, oppure
  - Correggere il comando proposto utilizzando il comando:
 
@@ -155,7 +155,7 @@ Se l'esecuzione fallisce, GRIT stamperà il messaggio d'errore restituito dal si
 /fix
 ```
 
-GRIT genererà una nuova versione corretta del comando precedente, basandosi sull'errore restituito.
+Gini genererà una nuova versione corretta del comando precedente, basandosi sull'errore restituito.
 
 ### 4.2.2 - Raffinamento del comando
 
