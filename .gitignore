@@ -18,7 +18,8 @@ notes
 #Personal config
 src/config.json
 
-#Pytest chache
+#Pytest
 .pytest_cache
+.coverage
 
 .vscode

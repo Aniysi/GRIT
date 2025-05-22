@@ -42,7 +42,7 @@ Le seguenti librerie devono essere installate nell’ambiente Python per garanti
 
 ### 3.1 - Scarica il progetto
 
-È sufficiente scaricare l’ultima **release** disponibile dal [repository GitHub](<https://github.com/Aniysi/GRIT>) (assicurati che includa le cartelle `src/` e `prova/`).
+È sufficiente scaricare l’ultima **release** disponibile dal [repository GitHub](<https://github.com/Aniysi/GRIT>) (assicurati che includa le cartelle `src/` e `chroma_db/`).
 
 
 ### 3.2 - Posiziona i file
@@ -93,7 +93,7 @@ Per garantire l’isolamento delle dipendenze e un'esecuzione stabile del plugin
 
 ```bash
 choosen_directory/
-├── prova/
+├── chroma_db/
 ├── src/
 └── requirements.txt
 ```
