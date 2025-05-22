@@ -5,6 +5,9 @@ import ollama
 
 class QueryLLM(Command):
     def __init__(self, model: str, messages):
+        if not messages:
+            raise ValueError("Messages cannot be empty")
+            
         self._model = model
         self._messages = messages
 

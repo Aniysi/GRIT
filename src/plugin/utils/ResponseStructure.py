@@ -9,7 +9,7 @@ class Response(BaseModel):
     command: str
 
     def toJson(self) -> str:
-        return json.dumps(self.dict(), indent=2, ensure_ascii=False)
+        return json.dumps(self.model_dump(), indent=2, ensure_ascii=False)
     
     def getCmdString(self) -> str:
         parts = self.command.strip().split()

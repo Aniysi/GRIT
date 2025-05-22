@@ -1,0 +1,8 @@
+colorama
+attrs
+PyMuPDF
+ollama
+chromadb
+rank_bm25
+pytest
+pytest-cov

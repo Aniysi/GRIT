@@ -14,3 +14,12 @@ chroma_db
 
 #Notes
 notes
+
+#Personal config
+src/config.json
+
+#Pytest
+.pytest_cache
+.coverage
+
+.vscode

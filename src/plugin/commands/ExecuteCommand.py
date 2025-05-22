@@ -9,6 +9,8 @@ from colorama import Fore, Style
 
 class ExecuteCommand(Command):
     def __init__(self, command: Response):
+        if not isinstance(command, Response):
+            raise TypeError(f"Param command must be a Response object, not {type(command)}")
         self._command = command
 
     def execute(self):
@@ -31,6 +33,6 @@ class ExecuteCommand(Command):
                 print(Fore.RED + "Error:\n" + error + Style.RESET_ALL, file=sys.stderr)
             return result
         except Exception as e:
-            sys.stderr.write("An exception has occurred: ", e)
+            sys.stderr.write("An exception has occurred: " + str(e))
             sys.exit(1)
 

@@ -1,6 +1,6 @@
 from plugin.commands.GetInput import GetInput
 from plugin.commands.CreateMessage import CreateMessage, Role
-from plugin.utils.prompts import CREATE_COMMAND_SYSTEM_PROMPT, GENERATION_LLM
+from plugin.utils.prompts import CREATE_COMMAND_SYSTEM_PROMPT
 from embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
 from embedding.RAGPipelineBuilder import QueryRAGPipelineBuilder
 from database.DBManager import ChromaDBManager
@@ -10,6 +10,7 @@ from plugin.commands.ComputeRRF import ComputeRRF
 from plugin.commands.QueryLLM import QueryLLM
 from plugin.commands.PrintResponse import PrintResponse
 from plugin.commands.ExecuteCommand import ExecuteCommand
+from plugin.utils.config import config
 
 from abc import ABC, abstractmethod
 from typing import List
@@ -56,7 +57,7 @@ class InitialState(State):
         pipeline = QueryRAGPipelineBuilder().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
         _, embeddings = pipeline.handle(self._query)
         # Get related chunks dense embeddings
-        DBpath = Path("C:/Users/leona/Desktop/Unipd/Terzo anno/Stage/project/prova")
+        DBpath = Path(config.database_path)
         manager = ChromaDBManager(DBpath, "test-nomic")
         closest_chunks = QueryDatabase(manager, embeddings).execute()
         # Get related chunks sparse embeddings
@@ -67,7 +68,7 @@ class InitialState(State):
         # Create and append new message with context
         new_message = CreateMessage(Role.user, self._query, str(results)).execute()
         messages.append(new_message)# Query LLM
-        response = QueryLLM(GENERATION_LLM, messages).execute() 
+        response = QueryLLM(config.model_name, messages).execute() 
         # Append LLM response to messages
         new_message = CreateMessage(Role.assistant, response.toJson()).execute()
         messages.append(new_message)
@@ -132,7 +133,7 @@ class RefinementState(State):
 
         correction_msg = "Correggi il precedente comando, secondo queste direttive: " + self._query
         messages.append(CreateMessage(Role.user, correction_msg).execute())
-        response = QueryLLM(GENERATION_LLM, messages).execute() 
+        response = QueryLLM(config.model_name, messages).execute() 
         messages.append(CreateMessage(Role.assistant, response.toJson()).execute())
         PrintResponse(response).execute()
 
