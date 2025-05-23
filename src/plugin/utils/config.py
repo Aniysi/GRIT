@@ -1,39 +1,38 @@
 from dataclasses import dataclass
 import json
 from pathlib import Path
+from typing import Type
 
 
 @dataclass
 class Config:
-    database_path: str
     model_name: str
 
     @classmethod
-    def from_json(cls, json_path: str | Path) -> "Config":
-        """Load configuration from a JSON file."""
-        with open(json_path, 'r') as f:
-            config_dict = json.load(f)
-        
-        # Check if required fields exist
-        required_fields = ['database_path', 'model_name']
-        missing_fields = [field for field in required_fields if field not in config_dict]
-        if missing_fields:
-            raise ValueError(f"Missing required fields in config: {', '.join(missing_fields)}")
-        
-        # If fields are empty, prompt for input
+    def from_json(cls: Type["Config"], json_path: str | Path) -> "Config":
+        """Load configuration from a JSON file, prompting user if needed."""
+        json_path = Path(json_path)
+
+        if not json_path.exists():
+            print(f"[INFO] Config file '{json_path}' does not exist. It will be created.")
+            config_dict = {}
+        else:
+            with open(json_path, 'r') as f:
+                config_dict = json.load(f)
+
+        required_fields = ['model_name']
         was_updated = False
-        if not config_dict['database_path']:
-            config_dict['database_path'] = input("Enter database path: ")
-            was_updated = True
-        if not config_dict['model_name']:
-            config_dict['model_name'] = input("Enter model name: ")
-            was_updated = True
-            
-        # Save updated config if needed
+
+        for field in required_fields:
+            if field not in config_dict or not config_dict[field]:
+                config_dict[field] = input(f"Enter {field.replace('_', ' ')}: ")
+                was_updated = True
+
         if was_updated:
             with open(json_path, 'w') as f:
                 json.dump(config_dict, f, indent=2)
-            
+            print(f"[INFO] Configuration saved to '{json_path}'")
+
         return cls(**config_dict)
 
     def to_json(self, json_path: str | Path) -> None:
