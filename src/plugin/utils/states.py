@@ -57,7 +57,7 @@ class InitialState(State):
         pipeline = QueryRAGPipelineBuilder().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
         _, embeddings = pipeline.handle(self._query)
         # Get related chunks dense embeddings
-        DBpath = Path(config.database_path)
+        DBpath = Path(__file__).parent.parent.parent.parent / "chroma_db"
         manager = ChromaDBManager(DBpath, "test-nomic")
         closest_chunks = QueryDatabase(manager, embeddings).execute()
         # Get related chunks sparse embeddings
