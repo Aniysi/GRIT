@@ -3,12 +3,12 @@ from unittest.mock import patch, MagicMock
 from plugin.commands.QueryLLM import QueryLLM
 from plugin.utils.ResponseStructure import Response
 from plugin.commands.CreateMessage import CreateMessage, Role
-from plugin.utils.config import config
+# from plugin.utils.config import config
 
 class TestQueryLLM:
     def setup_method(self):
         # Setup test data
-        self.model = config.model_name
+        self.model = "qwen3-4B"
         self.messages = [
             {"role": "system", "content": "You are a git command helper"},
             {"role": "user", "content": "How do I commit changes?"}
