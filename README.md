@@ -62,19 +62,19 @@ A seguire sono indicati due metodi alternativi per l'aggiunta della cartella `sr
 4. Nella finestra **Proprietà di sistema**, clicca su **Variabili d’ambiente...**;
 
 <p align="center">
-  <img src="./images/image.png" alt='Menù "Proprietà di sistema"' width="40%" />
+  <img src="./docs/assets/finestra_proprietà_sistema.png" alt='Menù "Proprietà di sistema"' width="40%" />
 </p>
 
 5. Nella sezione inferiore della finestra **Variabili d’ambiente**, seleziona la variabile `Path` e clicca su **Modifica...**;
 
 <p align="center">
-  <img src="./images/image-1.png" alt='Menù "Variabili d’ambiente"' width="40%" />
+  <img src="./docs/assets/finestra_variabili_ambiente.png" alt='Menù "Variabili d’ambiente"' width="40%" />
 </p>
 
 6. Nella finestra **Modifica variabile d’ambiente**, clicca su **Nuovo** e incolla il percorso della cartella `src/`;
 
 <p align="center">
-  <img src="./images/image-2.png" alt='Menù "Modifica variabile d’ambiente"' width="40%" />
+  <img src="./docs/assets/finestra_modifica_variabili_ambiente.png" alt='Menù "Modifica variabile d’ambiente"' width="40%" />
 </p>
 
 7. Conferma le modifiche cliccando su **OK** in tutte le finestre aperte.
