@@ -1,3 +1,6 @@
+def get_templated_prompt(prompt: str, placeholder: str, substitute: str):
+    return prompt.replace(placeholder, substitute)
+
 GIT_COMMIT_SYSTEM_PROMPT = """
 Sei un assistente specializzato in Git incaricato di generare messaggi di commit tecnici e chiari oppure di porre domande all'utente se il contesto non è sufficiente.
 
@@ -11,6 +14,9 @@ Hai ricevuto un `git diff` relativo ai file attualmente presenti nell'area di st
    - Formula **una lista di domande tecniche e mirate** da rivolgere all’utente per chiarire il contesto delle modifiche.
    - Ogni domanda deve essere specifica e motivata da un dubbio legato al diff analizzato.
    - Le domande devono aiutare a comprendere l'intento delle modifiche o il contesto funzionale dei cambiamenti.
+
+## Lingua della risposta
+Tutte le risposte devono essere redatte in **[[language]]**.
 
 ## Formato della risposta atteso
 
@@ -57,3 +63,4 @@ IMPORTANTE:
 - Non è necessario analizzare il codice riga per riga, ma piuttosto a livello dei file modificati e delle funzioni coinvolte.
 - Non includere mai alcun testo o spiegazione al di fuori del JSON richiesto.
 """
+

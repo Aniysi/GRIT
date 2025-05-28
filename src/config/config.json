@@ -1,0 +1,7 @@
+{
+    "output-language": "english",
+    "ollama": {
+        "model": "qwen3-4B",
+        "host": "http://localhost:11434"
+    }
+}

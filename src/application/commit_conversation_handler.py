@@ -2,7 +2,8 @@ from infrastructure.git_repository import get_staged_diff, create_custom_commit
 from llm.llm_client import LLMClient
 from domain.chat import ChatSession
 from cli.user_io import UserIO
-from domain.prompts import GIT_COMMIT_SYSTEM_PROMPT
+from domain.prompts import GIT_COMMIT_SYSTEM_PROMPT, get_templated_prompt
+from config.config import load_config
 from domain.git_diff import Diff
 
 class CommitConversationHandler():
@@ -12,8 +13,12 @@ class CommitConversationHandler():
         self._user_io = user_io
 
     def prepare(self):
+
+        # Get config 
+        config=load_config()
+
         # Add first message to session
-        self._chat_session.add_first_message(GIT_COMMIT_SYSTEM_PROMPT)
+        self._chat_session.add_first_message(get_templated_prompt(GIT_COMMIT_SYSTEM_PROMPT, "[[language]]", config["output-language"]))
 
         # Get git diff in cleaned string format
         raw_diff = get_staged_diff()

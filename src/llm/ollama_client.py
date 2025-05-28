@@ -1,15 +1,17 @@
 from llm.llm_client import LLMClient
 from domain.chat import ChatSession
 from domain.response_structure import LLMResponse
+from config.config import load_config
 
 from ollama import Client
 from typing import Tuple
 
 
 class OllamaClient(LLMClient):
-    def __init__(self, model: str = "qwen3-4B", host: str = "http://localhost:11434"):
-        self.__model = model
-        self.__client = Client(host=host)
+    def __init__(self):
+        config = load_config()
+        self.__model = config['ollama']['model']
+        self.__client = Client(host=config['ollama']['host'])
 
     def generate_commit_message(self, chat_session: ChatSession) -> Tuple[str, str]:
         response = self.__client.chat(
