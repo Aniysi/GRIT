@@ -1,6 +1,6 @@
 from llm.llm_client import LLMClient
 from domain.chat import ChatSession
-from domain.git_commit import LLMResponse
+from domain.response_structure import LLMResponse
 
 from ollama import Client
 from typing import Tuple

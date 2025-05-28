@@ -37,5 +37,11 @@ class ChatSession:
     def add_diff_message(self, diff: Diff):
         self.add_user_message(f"Questo è il Git diff dei file attualmente nell'area di staging:\n\n {diff}")
 
+    def add_user_answer(self, answer: str):
+        self.add_user_message(f"Questa è la risposta dell'utente alla tua precedente domanda: {answer}")
+
+    def add_user_new_instructions(self, instruction: str):
+        self.add_user_message(f"Modifica il comando precedentemente generato secondo queste nuove direttive: {instruction}")
+
     def to_dict_list(self):
         return [m.to_dict() for m in self._messages]

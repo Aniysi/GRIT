@@ -1,4 +1,5 @@
-from application.commit_service import generate_commit
+from cli.user_io import UserIO
+from application.commit_conversation_handler import CommitConversationHandler
 from llm.ollama_client import OllamaClient
 from domain.chat import ChatSession
 
@@ -15,8 +16,10 @@ def commit():
 
     llm_client = OllamaClient()
     chat_session = ChatSession()
+    user_io = UserIO()
 
-    print(generate_commit(llm_client, chat_session))
+    handler = CommitConversationHandler(llm_client, chat_session, user_io)
+    handler.handle()
 
 
 if __name__ == "__main__":
