@@ -33,14 +33,15 @@ class CommitConversationHandler():
 
             if response.mode == "commit":
                 if self._user_io.confirm(str(response.commit)):
-                    #create_custom_commit(response.commit)
+                    create_custom_commit(response.commit)
                     quit()
                 else:
                     user_response = self._user_io.ask_new_info()
                     self._chat_session.add_user_message(user_response)
             elif response.mode == "question":
-                user_response = self._user_io.ask(str(response.question))
-                self._chat_session.add_user_message(user_response)
+                for i, question in enumerate(response.questions.questions):
+                    user_response = self._user_io.ask(str(question))
+                    self._chat_session.add_user_message(user_response)
             else:
                 raise ValueError(f"Unexpected response mode: {response.mode}")
             
