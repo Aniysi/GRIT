@@ -16,8 +16,7 @@ def commit():
     llm_client = OllamaClient()
     chat_session = ChatSession()
 
-    generate_commit(llm_client, chat_session)
-    typer.echo(f"Generazione commento di commit")
+    print(generate_commit(llm_client, chat_session))
 
 
 if __name__ == "__main__":

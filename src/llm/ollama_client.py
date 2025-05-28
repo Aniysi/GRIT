@@ -1,5 +1,6 @@
 from llm.llm_client import LLMClient
 from domain.chat import ChatSession
+from domain.git_commit import LLMResponse
 
 from ollama import Client
 from typing import Tuple
@@ -13,24 +14,8 @@ class OllamaClient(LLMClient):
     def generate_commit_message(self, chat_session: ChatSession) -> Tuple[str, str]:
         response = self.__client.chat(
             model=self.__model,
-            messages=chat_session.to_dict_list()
+            messages=chat_session.to_dict_list(),
+            format=LLMResponse.model_json_schema()
         )
-        print(response["message"]["content"])
-
-        # content = response["message"]["content"]
-        # # Parsing semplice del formato Titolo: ..., Corpo: ...
-        # lines = content.strip().splitlines()
-        # title = ""
-        # body_lines = []
-        # in_body = False
-
-        # for line in lines:
-        #     if line.lower().startswith("titolo:"):
-        #         title = line.split(":", 1)[1].strip()
-        #     elif line.lower().startswith("corpo:"):
-        #         in_body = True
-        #         body_lines.append(line.split(":", 1)[1].strip())
-        #     elif in_body:
-        #         body_lines.append(line.strip())
-
-        # return title, "\n".join(body_lines).strip()
+        response = LLMResponse.model_validate_json(response.message.content)
+        return response
