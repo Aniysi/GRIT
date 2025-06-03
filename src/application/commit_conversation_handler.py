@@ -1,5 +1,5 @@
 from infrastructure.git_repository import get_staged_diff, create_custom_commit
-from llm.llm_client import LLMClient
+from domain.llm_client import LLMClient
 from domain.chat import ChatSession
 from cli.user_io import UserIO
 from domain.prompts import GIT_COMMIT_SYSTEM_PROMPT, get_templated_prompt
@@ -26,7 +26,6 @@ class CommitConversationHandler():
 
         # Add diff message
         self._chat_session.add_diff_message(diff)
-        #print(chat_session.to_dict_list(), "\n\n\n")
 
     def handle(self):
         self.prepare()

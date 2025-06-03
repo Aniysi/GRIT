@@ -1,17 +1,40 @@
 from cli.user_io import UserIO
+from application.cmd_conversation_hanlder import CmdConversationHandler
 from application.commit_conversation_handler import CommitConversationHandler
-from llm.ollama_client import OllamaClient
+from infrastructure.llm.ollama_client import OllamaClient
 from domain.chat import ChatSession
+from infrastructure.embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
+from infrastructure.embedding.rag_pipeline_builder import QueryRAGPipelineBuilder
+from infrastructure.database.database_manager import ChromaDBManager
+from application.rag.rag_context_builder import RAGContextBuilder
 from config.config import set_config_language, set_config_model
 
+from pathlib import Path
 import typer
 
 app = typer.Typer()
 
 @app.command()
 def cmd():
-    typer.echo(f"Generazione comando")
+    # Create dependencies for dependency injection
+    llm_client = OllamaClient()
+    chat_session = ChatSession()
+    user_io = UserIO()
 
+    chunker = RecursiveTokenChunker(
+        chunk_size = 400, 
+        chunk_overlap = 0, 
+        separators = ["\n\n\n", "\n\n", "\n", ".", " ", ""]
+    )
+    pipeline = QueryRAGPipelineBuilder().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
+    db_path = Path(__file__).parent.parent.parent / "chroma_db"
+    db_manager = ChromaDBManager(db_path, "git_commands")
+    context_builder = RAGContextBuilder(pipeline, db_manager)
+
+    # Handle conversation
+    handler = CmdConversationHandler(llm_client, chat_session, user_io, context_builder)
+    handler.handle()
+    
 @app.command()
 def commit():
 

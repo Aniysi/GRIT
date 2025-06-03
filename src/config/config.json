@@ -3,5 +3,6 @@
     "ollama": {
         "model": "qwen3-4B",
         "host": "http://localhost:11434"
-    }
+    },
+    "embedding-model": "nomic-embed-text"
 }

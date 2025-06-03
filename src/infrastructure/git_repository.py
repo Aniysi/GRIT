@@ -3,6 +3,7 @@ from domain.response_structure import CommitMsg
 from git import Repo
 import os
 
+#TODO: make it a context builder derived from IContextBuilder
 def get_staged_diff(repo_path: str = os.getcwd()) -> str:
     try:
         repo = Repo(repo_path)

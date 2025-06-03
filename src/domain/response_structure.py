@@ -30,3 +30,10 @@ class LLMResponse(BaseModel):
             return str(self.commit)
         elif self.mode == "question":
             return str(self.questions)
+        
+class GitCommand(BaseModel):
+    explanation: str
+    command: str
+
+    def __str__(self) -> str:
+        return f"Explanation: {self.explanation}\nCommand: {self.command}"
