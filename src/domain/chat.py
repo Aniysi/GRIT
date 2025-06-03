@@ -1,4 +1,4 @@
-from domain.git_diff import Diff
+from infrastructure.git_service.git_diff import Diff
 
 from enum import Enum
 

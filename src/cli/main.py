@@ -3,6 +3,7 @@ from application.cmd_conversation_hanlder import CmdConversationHandler
 from application.commit_conversation_handler import CommitConversationHandler
 from infrastructure.llm.ollama_client import OllamaClient
 from domain.chat import ChatSession
+from cli.command_parser import CLICommandParser
 from infrastructure.embedding.chunkingLibs.recursive_token_chunker import RecursiveTokenChunker
 from infrastructure.embedding.rag_pipeline_builder import QueryRAGPipelineBuilder
 from infrastructure.database.database_manager import ChromaDBManager
@@ -20,6 +21,7 @@ def cmd():
     llm_client = OllamaClient()
     chat_session = ChatSession()
     user_io = UserIO()
+    parser = CLICommandParser()
 
     chunker = RecursiveTokenChunker(
         chunk_size = 400, 
@@ -32,7 +34,7 @@ def cmd():
     context_builder = RAGContextBuilder(pipeline, db_manager)
 
     # Handle conversation
-    handler = CmdConversationHandler(llm_client, chat_session, user_io, context_builder)
+    handler = CmdConversationHandler(llm_client, chat_session, user_io, context_builder, parser)
     handler.handle()
     
 @app.command()

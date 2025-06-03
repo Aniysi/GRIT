@@ -1,4 +1,4 @@
-from domain.llm_client import LLMClient
+from infrastructure.llm.llm_client import LLMClient
 from domain.chat import ChatSession
 from domain.response_structure import LLMResponse, GitCommand
 from config.config import load_config

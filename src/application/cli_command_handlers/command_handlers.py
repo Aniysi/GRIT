@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from cli.user_io import UserIO
 from domain.chat import ChatSession
-from domain.llm_client import LLMClient
+from infrastructure.llm.llm_client import LLMClient
 from application.rag.rag_context_builder import RAGContextBuilder
 from config.config import load_config
 

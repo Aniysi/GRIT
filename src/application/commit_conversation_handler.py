@@ -1,10 +1,10 @@
-from infrastructure.git_repository import get_staged_diff, create_custom_commit
-from domain.llm_client import LLMClient
+from infrastructure.git_service.git_repository import get_staged_diff, create_custom_commit
+from infrastructure.llm.llm_client import LLMClient
 from domain.chat import ChatSession
 from cli.user_io import UserIO
 from domain.prompts import GIT_COMMIT_SYSTEM_PROMPT, get_templated_prompt
 from config.config import load_config
-from domain.git_diff import Diff
+from infrastructure.git_service.git_diff import Diff
 
 class CommitConversationHandler():
     def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO):

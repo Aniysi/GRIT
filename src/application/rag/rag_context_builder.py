@@ -1,11 +1,11 @@
-from infrastructure.embedding.rag_pipeline_builder import QueryRAGPipelineBuilder
+from infrastructure.embedding.rag_pipeline_builder import AbstractRAGPipelineBuilder
 from infrastructure.database.database_manager import DBManager
 
 from rank_bm25 import BM25Okapi
 import numpy as np
 
 class RAGContextBuilder():
-    def __init__(self, pipeline: QueryRAGPipelineBuilder, database_manager: DBManager):
+    def __init__(self, pipeline: AbstractRAGPipelineBuilder, database_manager: DBManager):
         self._pipeline = pipeline
         self._database_manager = database_manager
     

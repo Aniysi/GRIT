@@ -1,22 +1,22 @@
-from domain.llm_client import LLMClient
+from infrastructure.llm.llm_client import LLMClient
 from cli.user_io import UserIO
 from domain.chat import ChatSession
 from application.rag.rag_context_builder import RAGContextBuilder
 from config.config import load_config
 from domain.prompts import get_templated_prompt, CREATE_COMMAND_SYSTEM_PROMPT
-from cli.command_parser import CommandParser, CommandType
-from application.command_handlers import *
+from cli.command_parser import CLICommandParser, CLICommandType
+from application.cli_command_handlers.command_handlers import *
 
 from typing import Dict
 
 
 class CmdConversationHandler():
-    def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO, context_builder: RAGContextBuilder):
+    def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO, context_builder: RAGContextBuilder, parser: CLICommandParser):
         self._llm_client = llm_client
         self._chat_session = chat_session
         self._user_io = user_io
         self._context_builder = context_builder
-        self._parser = CommandParser()
+        self._parser = parser
 
         self._context = {
             'last_generated_command': None,
@@ -24,12 +24,12 @@ class CmdConversationHandler():
             'last_execution_error': None
         }
 
-        self._handlers: Dict[CommandType, CommandHandler] = {
-            CommandType.QUIT: QuitHandler(user_io),
-            CommandType.EXEC: ExecHandler(user_io),
-            CommandType.REFINE: RefineHandler(llm_client, chat_session, user_io),
-            CommandType.FIX: FixHandler(llm_client, chat_session, user_io),
-            CommandType.REGULAR: RegularHandler(llm_client, chat_session, user_io, context_builder)
+        self._handlers: Dict[CLICommandType, CommandHandler] = {
+            CLICommandType.QUIT: QuitHandler(user_io),
+            CLICommandType.EXEC: ExecHandler(user_io),
+            CLICommandType.REFINE: RefineHandler(llm_client, chat_session, user_io),
+            CLICommandType.FIX: FixHandler(llm_client, chat_session, user_io),
+            CLICommandType.REGULAR: RegularHandler(llm_client, chat_session, user_io, context_builder)
         }
 
     def prepare(self):
