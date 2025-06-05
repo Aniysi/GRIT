@@ -5,6 +5,7 @@ from cli.user_io import UserIO
 from domain.prompts import GIT_COMMIT_SYSTEM_PROMPT, get_templated_prompt
 from config.config import load_config
 from infrastructure.git_service.git_diff import Diff
+from domain.response_structure import Mode
 
 class CommitConversationHandler():
     def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO):
@@ -35,14 +36,14 @@ class CommitConversationHandler():
             response = self._llm_client.generate_commit_message(self._chat_session)
             self._chat_session.add_assistant_message(str(response))
 
-            if response.mode == "commit":
+            if response.mode == Mode.COMMIT:
                 if self._user_io.confirm(str(response.commit)):
                     create_custom_commit(response.commit)
                     quit()
                 else:
                     user_response = self._user_io.ask_new_info()
                     self._chat_session.add_user_message(user_response)
-            elif response.mode == "question":
+            elif response.mode == Mode.QUESTION:
                 for i, question in enumerate(response.questions.questions):
                     user_response = self._user_io.ask(str(question))
                     self._chat_session.add_user_message(user_response)

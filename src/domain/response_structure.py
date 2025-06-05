@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 from typing import Literal, Optional
+from enum import Enum
+
+
+class Mode(str, Enum):
+    COMMIT = "commit"
+    QUESTION = "question"
 
 class CommitMsg(BaseModel):
     title: str
@@ -19,9 +25,8 @@ class Questions(BaseModel):
             [f"{i + 1}. {q}" for i, q in enumerate(self.questions)]
         )
 
-# TODO: make mode an enum
 class LLMResponse(BaseModel):
-    mode: Literal["commit", "question"]
+    mode: Mode
     commit: Optional[CommitMsg] = None
     questions: Optional[Questions] = None
 

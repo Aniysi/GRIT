@@ -8,16 +8,7 @@ import sys
 console = Console()
 
 class UserIO:
-    def __init__(self):
-        signal.signal(signal.SIGTERM, self._handle_interrupt)
-        signal.signal(signal.SIGINT, self._handle_interrupt)  # Ctrl+C
-        if hasattr(signal, 'SIGBREAK'):
-            signal.signal(signal.SIGBREAK, self._handle_interrupt)
-
-    def _handle_interrupt(self, signum, frame):
-        console.print("\n[yellow]👋 Programma terminato.[/yellow]")
-        sys.exit(0)
-
+    # TODO: improve commit cli interaction
     def _check_quit(self, input_str: str) -> None:
         if input_str.strip().lower() == "/quit":
             console.print("[yellow]👋 Programma terminato.[/yellow]")
