@@ -71,4 +71,3 @@ Digita semplicemente la tua richiesta per generare un nuovo comando.
         """
         console.print(Panel(help_text, border_style="cyan"))
 
-

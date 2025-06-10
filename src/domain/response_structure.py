@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, constr
 from typing import Literal, Optional
 from enum import Enum
 
@@ -42,3 +42,10 @@ class GitCommand(BaseModel):
 
     def __str__(self) -> str:
         return f"Explanation: {self.explanation}\nCommand: {self.command}"
+    
+class ImpactAnalisys(BaseModel):
+    analisys: str
+    rating: int = Field(..., ge=1, le=10)
+
+    def __str__(self) -> str:
+        return f"Safety esteem: {self.rating}\nImpact anlisys: {self.analisys}"

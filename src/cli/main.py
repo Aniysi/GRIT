@@ -1,6 +1,7 @@
 from cli.user_io import UserIO
 from application.cmd_conversation_hanlder import CmdConversationHandler
 from application.commit_conversation_handler import CommitConversationHandler
+from application.commit_impact_handler import CommitImpactHandler
 from infrastructure.llm.ollama_client import OllamaClient
 from domain.chat import ChatSession
 from cli.command_parser import CLICommandParser
@@ -47,6 +48,17 @@ def commit():
 
     # Handle conversation
     handler = CommitConversationHandler(llm_client, chat_session, user_io)
+    handler.handle()#caccaboia
+
+@app.command()
+def impact(file_path: str = typer.Argument(..., help="Relative file path to analyze impact")):
+    
+    # Create dependencies for dependency injection
+    llm_client = OllamaClient()
+    chat_session = ChatSession()
+    user_io = UserIO()
+
+    handler = CommitImpactHandler(file_path, llm_client, chat_session, user_io)
     handler.handle()
 
 @app.command()

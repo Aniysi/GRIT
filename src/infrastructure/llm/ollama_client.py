@@ -1,6 +1,6 @@
 from infrastructure.llm.llm_client import LLMClient
 from domain.chat import ChatSession
-from domain.response_structure import LLMResponse, GitCommand
+from domain.response_structure import LLMResponse, GitCommand, ImpactAnalisys
 from config.config import load_config
 
 from ollama import Client
@@ -29,4 +29,13 @@ class OllamaClient(LLMClient):
             format=GitCommand.model_json_schema()
         )
         response = GitCommand.model_validate_json(response.message.content)
+        return response
+    
+    def generate_impact_report(self, chat_session: ChatSession) -> str:
+        response = self.__client.chat(
+            model=self.__model,
+            messages=chat_session.to_dict_list(),
+            format=ImpactAnalisys.model_json_schema()
+        )
+        response = ImpactAnalisys.model_validate_json(response.message.content)
         return response
