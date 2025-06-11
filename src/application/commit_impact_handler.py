@@ -4,7 +4,7 @@ from infrastructure.llm.llm_client import LLMClient
 from domain.chat import ChatSession
 from cli.user_io import UserIO
 from config.config import load_config
-from domain.prompts import get_templated_prompt, GIT_IMPACT_SYSTEM_PROMPT
+from domain.prompts import get_templated_prompt, GIT_IMPACT_SYSTEM_PROMPT, GIT_IMPACT_USER_MESSAGE
 
 import re
 from datetime import datetime, timezone, timedelta
@@ -132,24 +132,10 @@ class CommitImpactHandler:
         # Get line info
         modified_lines_metadata = self.get_info(hash)
 
-        user_message = f"""
-## Current version of the file
-
-```python
-{current_file_content}
-```
-
-## Last pushed version of the file (remote)
-```python
-{remote_file_content}
-```
-
-## Modified lines metadata
-The following lines of the remote version of the file were modified in the current version of the file. 
-For each line, the associated commit hash, author, and how long ago it was last modified are reported.
-{json.dumps(modified_lines_metadata, indent=2)}
-Please analyze the above information as instructed and provide your risk assessment./no_think
-"""
+        user_message = get_templated_prompt(
+            GIT_IMPACT_USER_MESSAGE, 
+            ["[[current_file_content]]", "[[remote_file_content]]", "[[modified_lines_metadata]]"],
+            [current_file_content, remote_file_content, json.dumps(modified_lines_metadata, indent=2)])
 
         self._chat_session.add_user_message(user_message)
 

@@ -22,6 +22,14 @@ class ChatSession:
     def __init__(self):
         self._messages: list[ChatMessage] = []
 
+
+    def clear_messages(self):
+        self._messages.clear()
+
+    def pop_last_message(self) -> ChatMessage:
+        return self._messages.pop() if self._messages else None
+
+
     def add_user_message(self, content: str):
         self._messages.append(ChatMessage(role=Role.user, content=content))
 
@@ -34,6 +42,7 @@ class ChatSession:
     def add_first_message(self, content: str):
         self.add_system_message(content)
     
+
     # Create commit comments messages
     def add_diff_message(self, diff: Diff):
         self.add_user_message(f"Questo è il Git diff dei file attualmente nell'area di staging:\n\n {diff}")
@@ -43,6 +52,7 @@ class ChatSession:
 
     def add_user_new_instructions(self, instruction: str):
         self.add_user_message(f"Modifica il comando precedentemente generato secondo queste nuove direttive: {instruction}")
+
 
     # Create command messages
     def add_context_message(self, context: str, query: str):

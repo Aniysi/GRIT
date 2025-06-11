@@ -39,3 +39,19 @@ class OllamaClient(LLMClient):
         )
         response = ImpactAnalisys.model_validate_json(response.message.content)
         return response
+    
+    def generate_response(self, chat_session: ChatSession) -> str:
+        response = self.__client.chat(
+            model=self.__model,
+            messages=chat_session.to_dict_list(),
+            stream=True
+        )
+        
+        full_response = ""
+        for chunk in response:
+            content = chunk['message']['content']
+            print(content, end='', flush=True)  # Print chunk immediately
+            full_response += content
+        
+        print()  # Add newline after streaming is complete
+        return full_response

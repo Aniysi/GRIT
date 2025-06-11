@@ -2,6 +2,7 @@ from cli.user_io import UserIO
 from application.cmd_conversation_hanlder import CmdConversationHandler
 from application.commit_conversation_handler import CommitConversationHandler
 from application.commit_impact_handler import CommitImpactHandler
+from application.merge_conflict_handler import MergeConflictHandler
 from infrastructure.llm.ollama_client import OllamaClient
 from domain.chat import ChatSession
 from cli.command_parser import CLICommandParser
@@ -59,6 +60,22 @@ def impact(file_path: str = typer.Argument(..., help="Relative file path to anal
     user_io = UserIO()
 
     handler = CommitImpactHandler(file_path, llm_client, chat_session, user_io)
+    handler.handle()
+
+@app.command()
+def merge(path: str = typer.Argument(None, help="Path to file or directory to search for conflicts. If not provided, uses current directory")):
+
+    # Set default to current directory if no path provided
+    if path is None:
+        path = "."
+
+    # Create dependencies for dependency injection
+    llm_client = OllamaClient()
+    chat_session = ChatSession()
+    user_io = UserIO()
+
+    # Handle conversation
+    handler = MergeConflictHandler(path, llm_client, chat_session, user_io)
     handler.handle()
 
 @app.command()

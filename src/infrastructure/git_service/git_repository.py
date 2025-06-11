@@ -63,3 +63,66 @@ def create_custom_commit(commit: CommitMsg, repo_path: str = os.getcwd()) -> boo
         return True
     except Exception as e:
         raise ValueError(f"Error creating commit in repository at '{repo_path}': {str(e)}")
+
+def get_conflicted_files(path: str = None) -> list[Path]:
+    if path is None:
+        path = Path.cwd()
+    else:
+        path = Path(path)
+    
+    try:
+        if path.is_file():
+            repo = Repo(path.parent)
+            if not repo.git_dir:
+                raise ValueError(f"'{path.parent}' is not a Git repository")
+            
+            # Get all conflicted files
+            conflicted_files_output = repo.git.ls_files(u=True)
+            if not conflicted_files_output.strip():
+                return []
+            
+            # Convert file path to relative path from repo root
+            repo_root = Path(repo.working_dir)
+            try:
+                relative_path = path.relative_to(repo_root)
+            except ValueError:
+                # File is outside repo
+                return []
+            
+            # Check if the specific file is in conflicts
+            for line in conflicted_files_output.splitlines():
+                parts = line.split('\t')  # Git output uses tabs
+                if len(parts) >= 2:
+                    conflicted_file = parts[1]  # File path is after the tab
+                    if Path(conflicted_file) == relative_path:
+                        return [path]
+            
+            return []
+            
+        elif path.is_dir():
+            repo = Repo(path)
+            if not repo.git_dir:
+                raise ValueError(f"'{path}' is not a Git repository")
+
+            # Get all conflicted files
+            conflicted_files_output = repo.git.ls_files(u=True)
+            if not conflicted_files_output.strip():
+                return []
+            
+            # Parse the output to extract file paths
+            conflicted_files = set()
+            repo_root = Path(repo.working_dir)
+            
+            for line in conflicted_files_output.splitlines():
+                parts = line.split('\t')  # Git output uses tabs
+                if len(parts) >= 2:
+                    file_path = parts[1]  # File path is after the tab
+                    full_path = repo_root / file_path
+                    conflicted_files.add(full_path)
+            
+            return sorted(list(conflicted_files))
+        else:
+            raise ValueError(f"'{path}' is neither a file nor a directory")
+            
+    except Exception as e:
+        raise ValueError(f"Error getting conflicted files: {str(e)}")

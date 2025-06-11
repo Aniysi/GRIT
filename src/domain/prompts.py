@@ -1,5 +1,12 @@
-def get_templated_prompt(prompt: str, placeholder: str, substitute: str):
-    return prompt.replace(placeholder, substitute)
+def get_templated_prompt(prompt: str, placeholder, substitute):
+  if isinstance(placeholder, list) and isinstance(substitute, list):
+    for ph, sub in zip(placeholder, substitute):
+      prompt = prompt.replace(ph, sub)
+  elif isinstance(placeholder, str) and isinstance(substitute, str):
+    prompt = prompt.replace(placeholder, substitute)
+  else:
+    raise ValueError("Placeholder and substitute must both be either strings or lists of equal length.")
+  return prompt
 
 GIT_COMMIT_SYSTEM_PROMPT = """
 You are a Git assistant specialized in generating technical and clear commit messages, or in asking the user clarifying questions when the context is insufficient.
@@ -143,5 +150,50 @@ Return your response in the following JSON format:
 Your response must be concise, neutral, and based solely on the provided data. **RESPOND USING AT MOST 200 TOKENS**
 """
 
+GIT_IMPACT_USER_MESSAGE = """
+## Current version of the file
 
+```
+[[current_file_content]]
+```
+
+## Last pushed version of the file (remote)
+
+```
+[[remote_file_content]]
+```
+
+## Modified lines metadata
+The following lines of the remote version of the file were modified in the current version of the file. 
+For each line, the associated commit hash, author, and how long ago it was last modified are reported.
+[[modified_lines_metadata]]
+Please analyze the above information as instructed and provide your risk assessment./no_think
+"""
+
+RESOLVE_CONFLICT_SYSTEM_PROMPT = """
+You are an expert software engineer. Your task is to resolve Git merge conflicts in source code files.
+
+Guidelines:
+- The input you receive will contain code with Git merge conflict markers (e.g., <<<<<<<, =======, >>>>>>>).
+- You must resolve the conflict in a way that makes the resulting code syntactically and logically correct.
+- You are allowed to modify both conflicting versions or merge them together if needed. You do **not necessarily** have to choose one side over the other.
+- If necessary, rewrite parts of the code to integrate both changes coherently and resolve the conflict properly.
+- Be precise, cautious, and preserve the intent of both code versions whenever possible.
+- Do **not** include any conflict markers in your response.
+- Do **not** add any explanation or extra commentary — return only the final, resolved code.
+- Your response must be in English.
+
+The conflicted code will be provided in a separate message./no_think
+"""
+
+RESOLVE_CONFLICT_USER_PROMPT = """
+Below is the content of a source code file that contains Git merge conflicts.
+Resolve the conflicts according to the system instructions you received.
+
+--- BEGIN CONFLICTED FILE ---
+
+{conflicted_code}
+
+--- END CONFLICTED FILE ---
+"""
 
