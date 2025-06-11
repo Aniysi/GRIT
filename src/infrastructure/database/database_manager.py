@@ -15,7 +15,7 @@ class ChromaDBManager(DBManager):
             self.client = chromadb.PersistentClient(path=str(db_path))
             if not self.client:
                 raise ConnectionError("Failed to create ChromaDB client")
-            self.collection = self.client.get_collection(collection_name)
+            self.collection = self.client.get_or_create_collection(collection_name)
             if not self.collection:
                 raise ConnectionError(f"Failed to get collection: {collection_name}")
         except Exception as e:

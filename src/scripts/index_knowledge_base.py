@@ -24,11 +24,11 @@ def embed(arg):
     # Build pipeline for embedding generation
     pipeline = QueryRAGPipelineBuilder().add_Chunker(chunker).add_Embedder('nomic-embed-text').build()
     # Initialize ChromaDBManager
-    db_path = Path("../chroma_db")
+    db_path = Path(__file__).parent.parent.parent / "chroma_db"
     db_manager = ChromaDBManager(db_path, "git_commands")
 
     # Read examples.json
-    examples_path = Path("../src/infrastructure/examples.json")
+    examples_path = Path(__file__).parent.parent / "infrastructure" / "examples.json"
     with open(examples_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
