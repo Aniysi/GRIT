@@ -5,7 +5,7 @@ from cli.user_io import UserIO
 from domain.prompts import GIT_COMMIT_SYSTEM_PROMPT, get_templated_prompt
 from config.config import load_config
 from infrastructure.git_service.git_diff import Diff
-from domain.response_structure import Mode
+from domain.response_structure import Mode, CommitResponse
 
 class CommitConversationHandler():
     def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO):
@@ -32,7 +32,7 @@ class CommitConversationHandler():
 
         while (True):
             # Get llm response
-            response = self._llm_client.generate_commit_message(self._chat_session)
+            response = self._llm_client.generate_structured_response(self._chat_session, CommitResponse)
             self._chat_session.add_assistant_message(str(response))
 
             if response.mode == Mode.COMMIT:

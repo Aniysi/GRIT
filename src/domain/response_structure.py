@@ -25,7 +25,7 @@ class Questions(BaseModel):
             [f"{i + 1}. {q}" for i, q in enumerate(self.questions)]
         )
 
-class LLMResponse(BaseModel):
+class CommitResponse(BaseModel):
     mode: Mode
     commit: Optional[CommitMsg] = None
     questions: Optional[Questions] = None
@@ -49,3 +49,9 @@ class ImpactAnalisys(BaseModel):
 
     def __str__(self) -> str:
         return f"Safety esteem: {self.rating}\nImpact anlisys: {self.analisys}"
+    
+class FileContent(BaseModel):
+    content: str
+
+    def __str__(self) -> str:
+        return self.content

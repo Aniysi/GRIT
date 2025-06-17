@@ -4,6 +4,7 @@ from domain.chat import ChatSession
 from infrastructure.llm.llm_client import LLMClient
 from application.rag.rag_context_builder import RAGContextBuilder
 from config.config import load_config
+from domain.response_structure import GitCommand
 
 import subprocess
 import sys
@@ -90,7 +91,7 @@ class RefineHandler(CommandHandler):
         self._chat_session.add_user_message(refinement_message)
         
         # Generate refined command
-        response = self._llm_client.generate_cmd(self._chat_session)
+        response = self._llm_client.generate_structured_response(self._chat_session, GitCommand)
         refined_command = str(response)
         
         # Display command and add it to conversation context
@@ -119,7 +120,7 @@ class FixHandler(CommandHandler):
         self._chat_session.add_user_message(fix_message)
         
         # Generate fixed command
-        response = self._llm_client.generate_cmd(self._chat_session)
+        response = self._llm_client.generate_structured_response(self._chat_session, GitCommand)
         fixed_command = str(response)
         
         # Display command and add it to conversation context
@@ -150,7 +151,7 @@ class RegularHandler(CommandHandler):
         self._chat_session.add_context_message(rag_context, content)
         
         # Get llm generated command
-        response = self._llm_client.generate_cmd(self._chat_session)
+        response = self._llm_client.generate_structured_response(self._chat_session, GitCommand)
         generated_command = str(response)
         
         # Display command and add it to conversation context

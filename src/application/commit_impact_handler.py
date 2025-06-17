@@ -5,6 +5,7 @@ from domain.chat import ChatSession
 from cli.user_io import UserIO
 from config.config import load_config
 from domain.prompts import get_templated_prompt, GIT_IMPACT_SYSTEM_PROMPT, GIT_IMPACT_USER_MESSAGE
+from domain.response_structure import ImpactAnalisys
 
 import re
 from datetime import datetime, timezone, timedelta
@@ -139,7 +140,7 @@ class CommitImpactHandler:
 
         self._chat_session.add_user_message(user_message)
 
-        response = self._llm_client.generate_impact_report(self._chat_session)
+        response = self._llm_client.generate_structured_response(self._chat_session, ImpactAnalisys)
 
         self._user_io.display_output(str(response))
 

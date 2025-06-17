@@ -6,6 +6,7 @@ from config.config import load_config
 from domain.prompts import get_templated_prompt, CREATE_COMMAND_SYSTEM_PROMPT
 from cli.command_parser import CLICommandParser, CLICommandType
 from application.cli_command_handlers.command_handlers import *
+from domain.response_structure import GitCommand
 
 from typing import Dict
 
@@ -61,7 +62,7 @@ class CmdConversationHandler():
                     break
                 
                 # Get llm response
-                response = self._llm_client.generate_cmd(self._chat_session)
+                response = self._llm_client.generate_structured_response(self._chat_session, GitCommand)
                 self._chat_session.add_assistant_message(str(response))
 
             except KeyboardInterrupt:
