@@ -1,10 +1,11 @@
 from infrastructure.git_service.git_diff import Diff
-from infrastructure.git_service.git_repository import get_conflicted_files
+from infrastructure.git_service.git_repository import get_conflicted_files, git_add_to_staging
 from infrastructure.llm.llm_client import LLMClient
 from domain.chat import ChatSession
 from cli.user_io import UserIO
 from config.config import load_config
 from domain.prompts import get_templated_prompt, RESOLVE_CONFLICT_SYSTEM_PROMPT, RESOLVE_CONFLICT_USER_PROMPT
+from domain.response_structure import ConflictResolutionResponse, Status
 
 import re
 from datetime import datetime, timezone, timedelta
@@ -39,6 +40,16 @@ class MergeConflictHandler:
 
             self._chat_session.add_user_message(RESOLVE_CONFLICT_USER_PROMPT.format(conflicted_code=file_content))
 
-            self._llm_client.generate_response(self._chat_session)
+            response = self._llm_client.generate_structured_response(self._chat_session, ConflictResolutionResponse)
+
+            if response.status == Status.RESOLVED and response.content:
+                with open(file, "w") as f:
+                    f.write(response.content)
+                git_add_to_staging(file)
+                self._user_io.display_success(f"Conflict in file {file} resolved!")
+            elif response.status == Status.UNRESOLVED and response.reason:
+                self._user_io.display_message(f"Could not resolve conflict in file {file}\nReason: {response.reason}")
+            else:
+                raise ValueError(f"Unexpected response status and data: {response.status}")
 
             self._chat_session.pop_last_message()

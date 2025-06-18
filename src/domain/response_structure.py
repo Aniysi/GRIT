@@ -49,9 +49,12 @@ class ImpactAnalisys(BaseModel):
 
     def __str__(self) -> str:
         return f"Safety esteem: {self.rating}\nImpact anlisys: {self.analisys}"
-    
-class FileContent(BaseModel):
-    content: str
 
-    def __str__(self) -> str:
-        return self.content
+class Status(str, Enum):
+    RESOLVED = "resolved"
+    UNRESOLVED = "unresolved"  
+
+class ConflictResolutionResponse(BaseModel):
+    status: Status
+    content: Optional[str]
+    reason: Optional[str]

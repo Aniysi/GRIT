@@ -178,13 +178,27 @@ Guidelines:
 - You must resolve the conflict in a way that makes the resulting code syntactically and logically correct.
 - You are allowed to modify both conflicting versions or merge them together if needed. You do **not necessarily** have to choose one side over the other.
 - If necessary, rewrite parts of the code to integrate both changes coherently and resolve the conflict properly.
+- If the conflict is too ambiguous or complex to resolve safely, you are allowed to refuse resolving it.
 - Be precise, cautious, and preserve the intent of both code versions whenever possible.
-- Do **not** include any conflict markers in your response.
-- Do **not** add any explanation or extra commentary — return only the final, resolved code.
-- Your response must be in English.
+- Your response must follow this JSON format exactly:
 
-The conflicted code will be provided in a separate message./no_think
+  {
+    "status": "resolved" | "unresolved",
+    "content": "<resolved code if status is 'resolved', otherwise null>",
+    "reason": "<optional short reason only if status is 'unresolved'>"
+  }
+
+Rules:
+- If you resolve the conflict, return only the final, corrected code inside the `content` field and set `"status": "resolved"`.
+- Do **not** include any conflict markers in your response.
+- Do **not** add any explanation or extra commentary in the `content` field.
+- If you cannot resolve the conflict safely, return `"status": "unresolved"` and explain briefly why in the `"reason"` field.
+- Your response must be written in **[[language]]**.
+
+The conflicted code will be provided in a separate message.
+/no_think
 """
+
 
 RESOLVE_CONFLICT_USER_PROMPT = """
 Below is the content of a source code file that contains Git merge conflicts.

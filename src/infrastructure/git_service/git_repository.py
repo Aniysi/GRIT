@@ -69,10 +69,12 @@ def get_conflicted_files(path: str = None) -> list[Path]:
         path = Path.cwd()
     else:
         path = Path(path)
+        if not path.is_absolute():
+            path = path.resolve()
     
     try:
         if path.is_file():
-            repo = Repo(path.parent)
+            repo = Repo(path.parent, search_parent_directories=True)
             if not repo.git_dir:
                 raise ValueError(f"'{path.parent}' is not a Git repository")
             
@@ -88,8 +90,7 @@ def get_conflicted_files(path: str = None) -> list[Path]:
             except ValueError:
                 # File is outside repo
                 return []
-            
-            # Check if the specific file is in conflicts
+              # Check if the specific file is in conflicts
             for line in conflicted_files_output.splitlines():
                 parts = line.split('\t')  # Git output uses tabs
                 if len(parts) >= 2:
@@ -100,7 +101,9 @@ def get_conflicted_files(path: str = None) -> list[Path]:
             return []
             
         elif path.is_dir():
-            repo = Repo(path)
+            # Try to find the Git repository starting from the given path
+            # search_parent_directories=True will look for .git in parent directories
+            repo = Repo(path, search_parent_directories=True)
             if not repo.git_dir:
                 raise ValueError(f"'{path}' is not a Git repository")
 
@@ -126,3 +129,16 @@ def get_conflicted_files(path: str = None) -> list[Path]:
             
     except Exception as e:
         raise ValueError(f"Error getting conflicted files: {str(e)}")
+    
+def git_add_to_staging(file_path: Path, repo_path: str = os.getcwd()) -> bool:
+    try:
+        repo = Repo(repo_path)
+        if not repo.git_dir:
+            raise ValueError(f"'{repo_path}' is not a Git repository")
+        
+        # Add the file to the staging area
+        repo.git.add(str(file_path))
+        return True
+    except Exception as e:
+        raise ValueError(f"Error adding file '{file_path}' to staging area: {str(e)}")
+    
