@@ -7,42 +7,7 @@ import sys
 
 console = Console()
 
-class UserIO:
-    # TODO: improve commit cli interaction
-    def _check_quit(self, input_str: str) -> None:
-        if input_str.strip().lower() == "/quit":
-            console.print("[yellow]Program terminated.[/yellow]")
-            exit(0)
-
-    def ask(self, question: str) -> str:
-        console.print(Panel(question, border_style="cyan", width=80))
-        response = console.input("[blue]❯ [/blue]")
-        self._check_quit(response)
-        return response
-
-    def confirm(self, commit_data: str) -> bool:
-        console.print(Panel(commit_data, title="[green]Generated commit message[/green]", border_style="green"))
-
-        response = Confirm.ask("[blue]Do you want to perform the commit?[/blue]")
-        self._check_quit(str(response))
-        
-        if response:
-            console.print("[green]Commit confirmed.[/green]")
-            return True
-        else:
-            console.print("[yellow]Operation cancelled.[/yellow]")
-            return False
-
-    def ask_new_info(self) -> str:
-        response = Prompt.ask("[cyan]Provide new instructions[/cyan]")
-        self._check_quit(response)
-        return response
-    
-    def ask_query(self) -> str:
-        response = console.input("[blue]❯ [/blue]")
-        self._check_quit(response)
-        return response
-    
+class UserIO:    
     def ask_query(self) -> str:
         return console.input("[blue]❯ [/blue]").strip()
     
@@ -53,11 +18,14 @@ class UserIO:
         console.print(f"[red]❌ {error}[/red]")
         
     def display_success(self, message: str) -> None:
-        console.print(f"[green]✅ {message}[/green]")
+        console.print(f"[green]{message}[/green]")
         
     def display_output(self, output: str) -> None:
         console.print(Panel(output, title="Output", border_style="blue"))
     
+    def display_question(self, question: str):
+        console.print(Panel(question, border_style="cyan", width=80))
+
     def display_cmd_help(self) -> None:
         help_text = """
 [bold cyan]Available commands:[/bold cyan]

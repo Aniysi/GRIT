@@ -66,8 +66,8 @@ class CmdConversationHandler():
                 self._chat_session.add_assistant_message(str(response))
 
             except KeyboardInterrupt:
-                self._user_io.display_message("\n[yellow]👋 Programma terminato.[/yellow]")
+                self._user_io.display_message("\n[yellow]Program terminated.[/yellow]")
                 break
             except Exception as e:
-                self._user_io.display_error(f"Errore imprevisto: {str(e)}")
-
+                self._user_io.display_error(f"Unexpected error: {str(e)}")
+                self._user_io.display_cmd_help()

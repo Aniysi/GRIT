@@ -78,8 +78,16 @@ class CommitConversationHandler():
                         break
                 elif response.mode == Mode.QUESTION:
                     for i, question in enumerate(response.questions.questions):
-                        user_response = self._user_io.ask(str(question))
-                        self._chat_session.add_user_message(user_response)
+                        self._user_io.display_question(str(question))
+                        user_input = self._user_io.ask_query()
+                        parsed_command = self._parser.parse(user_input)
+                        if (parsed_command.command_type == CLICommandType.QUIT):
+                            handler = self._handlers[parsed_command.command_type]
+                            should_continue = handler.handle(parsed_command.content, self._commit)
+                            if not should_continue:
+                                break
+                        else:
+                            self._chat_session.add_user_message(user_input)
                 else:
                     raise ValueError(f"Unexpected response mode: {response.mode}")
                 
@@ -88,5 +96,5 @@ class CommitConversationHandler():
                 break
             except Exception as e:
                 self._user_io.display_error(f"Unexpected error: {str(e)}")
-            
+                self._user_io.display_commit_help()
 
