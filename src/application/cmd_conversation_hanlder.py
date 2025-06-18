@@ -28,7 +28,7 @@ class CmdConversationHandler():
         self._handlers: Dict[CLICommandType, CommandHandler] = {
             CLICommandType.QUIT: QuitHandler(user_io),
             CLICommandType.EXEC: ExecHandler(user_io),
-            CLICommandType.REFINE: RefineHandler(llm_client, chat_session, user_io),
+            CLICommandType.REFINE: RefineCmdHandler(llm_client, chat_session, user_io),
             CLICommandType.FIX: FixHandler(llm_client, chat_session, user_io),
             CLICommandType.REGULAR: RegularHandler(llm_client, chat_session, user_io, context_builder)
         }

@@ -5,6 +5,9 @@ from infrastructure.llm.llm_client import LLMClient
 from application.rag.rag_context_builder import RAGContextBuilder
 from config.config import load_config
 from domain.response_structure import GitCommand
+from domain.response_structure import CommitMsg
+from infrastructure.git_service.git_repository import create_custom_commit
+
 
 import subprocess
 import sys
@@ -70,7 +73,7 @@ class ExecHandler(CommandHandler):
             
         return True
 
-class RefineHandler(CommandHandler):
+class RefineCmdHandler(CommandHandler):
     def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO):
         self._llm_client = llm_client
         self._chat_session = chat_session
@@ -159,3 +162,44 @@ class RegularHandler(CommandHandler):
         self._chat_session.add_assistant_message(generated_command)
         context['last_generated_command'] = response.command
         return True
+    
+class CommitHandler(CommandHandler):
+    def __init__(self, user_io):
+        self._user_io = user_io
+
+    def handle(self, content: str, commit: dict):
+        if (create_custom_commit(commit['commit_title'], commit['commit_body'])):
+            self._user_io.display_success("Commit succesfull!")
+        else:
+            self._user_io.display_error("Unable to commit changes")
+        return False
+    
+class RefineCommitHandler(CommandHandler):
+    def __init__(self, llm_client: LLMClient, chat_session: ChatSession, user_io: UserIO):
+        self._llm_client = llm_client
+        self._chat_session = chat_session
+        self._user_io = user_io
+    
+    def handle(self, content: str, commit: dict):
+        if not content:
+            self._user_io.display_error("Specify your corrections after /refine")
+            return True
+        
+        correction_msg = f"""
+        You previously produced the following commit message:
+
+        Commit title: {commit['commit_title']}
+        Commit body {commit['commit_body']}
+
+        Now apply the following correction to the commit message:
+
+        **{content}**
+        """ 
+
+        # Add chat message to chat session
+        self._chat_session.add_user_message(correction_msg)
+
+        return True
+    
+        
+

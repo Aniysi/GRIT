@@ -52,14 +52,14 @@ def get_file_from_hash(commit_hash: str, file_path: Path, repo_path: str = os.ge
     except Exception as e:
         raise ValueError(f"Error getting file content for '{file_path}' at commit '{commit_hash}': {str(e)}")
     
-def create_custom_commit(commit: CommitMsg, repo_path: str = os.getcwd()) -> bool:
+def create_custom_commit(commit_title: str, commit_body: str, repo_path: str = os.getcwd()) -> bool:
     try:
         repo = Repo(repo_path)
         if not repo.git_dir:
             raise ValueError(f"'{repo_path}' is not a Git repository")
         
         # Create the commit with the provided title and message
-        repo.index.commit(f"{commit.title}\n\n{commit.body}")
+        repo.index.commit(f"{commit_title}\n\n{commit_body}")
         return True
     except Exception as e:
         raise ValueError(f"Error creating commit in repository at '{repo_path}': {str(e)}")

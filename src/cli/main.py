@@ -46,9 +46,10 @@ def commit():
     llm_client = OllamaClient()
     chat_session = ChatSession()
     user_io = UserIO()
+    parser = CLICommandParser()
 
     # Handle conversation
-    handler = CommitConversationHandler(llm_client, chat_session, user_io)
+    handler = CommitConversationHandler(llm_client, chat_session, user_io, parser)
     handler.handle()#caccaboia
 
 @app.command()

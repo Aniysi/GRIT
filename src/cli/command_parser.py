@@ -7,6 +7,7 @@ class CLICommandType(Enum):
     FIX = "fix"
     QUIT = "quit"
     REGULAR = "regular"
+    COMMIT = "commit"
 
 @dataclass
 class ParsedCLICommand:
@@ -33,5 +34,8 @@ class CLICommandParser:
             refinement = stripped_input[8:].strip()  # Remove "/refine "
             return ParsedCLICommand(CLICommandType.REFINE, refinement)
         
+        if stripped_input.lower() == "/commit":
+            return ParsedCLICommand(CLICommandType.COMMIT)
+
         # Handle regular text input
         return ParsedCLICommand(CLICommandType.REGULAR, stripped_input)
