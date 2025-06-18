@@ -24,7 +24,7 @@ class QuitHandler(CommandHandler):
         self._user_io = user_io
         
     def handle(self, content: str, context: dict) -> bool:
-        self._user_io.display_message("[yellow]👋 Programma terminato.[/yellow]")
+        self._user_io.display_message("[yellow]Program terminated.[/yellow]")
         return False
     
 
@@ -35,7 +35,7 @@ class ExecHandler(CommandHandler):
     def handle(self, content: str, context: dict) -> bool:
         last_command = context.get('last_generated_command')
         if not last_command:
-            self._user_io.display_error("Nessun comando da eseguire. Genera prima un comando.")
+            self._user_io.display_error("No command to execute. Generate a command first.")
             return True
             
         try:
@@ -50,24 +50,24 @@ class ExecHandler(CommandHandler):
             )
             
             if result.returncode == 0:
-                self._user_io.display_success("Comando eseguito con successo!")
+                self._user_io.display_success("Command executed successfully!")
                 if result.stdout:
                     self._user_io.display_output(result.stdout)
                 context['last_execution_success'] = True
                 context['last_execution_error'] = None
             else:
-                self._user_io.display_error(f"Comando fallito con codice {result.returncode}")
+                self._user_io.display_error(f"Command failed with code {result.returncode}")
                 if result.stderr:
                     self._user_io.display_error(result.stderr)
                 context['last_execution_success'] = False
                 context['last_execution_error'] = result.stderr
                 
         except subprocess.TimeoutExpired:
-            self._user_io.display_error("Comando interrotto per timeout")
+            self._user_io.display_error("Command interrupted due to timeout")
             context['last_execution_success'] = False
             context['last_execution_error'] = "Timeout expired"
         except Exception as e:
-            self._user_io.display_error(f"Errore nell'esecuzione: {str(e)}")
+            self._user_io.display_error(f"Execution error: {str(e)}")
             context['last_execution_success'] = False
             context['last_execution_error'] = str(e)
             
@@ -81,12 +81,12 @@ class RefineCmdHandler(CommandHandler):
         
     def handle(self, content: str, context: dict) -> bool:
         if not content:
-            self._user_io.display_error("Specifica le correzioni da applicare dopo /refine")
+            self._user_io.display_error("Specify the corrections to apply after /refine")
             return True
             
         last_command = context.get('last_generated_command')
         if not last_command:
-            self._user_io.display_error("Nessun comando da raffinare. Genera prima un comando.")
+            self._user_io.display_error("No command to refine. Generate a command first.")
             return True
             
         # Add refinement request to chat
@@ -98,7 +98,7 @@ class RefineCmdHandler(CommandHandler):
         refined_command = str(response)
         
         # Display command and add it to conversation context
-        self._user_io.display_message(f"[green]Comando raffinato:[/green]\n{refined_command}")
+        self._user_io.display_message(f"[green]Refined command:[/green]\n{refined_command}")
         self._chat_session.add_assistant_message(refined_command)
         context['last_generated_command'] = response.command
         
@@ -115,7 +115,7 @@ class FixHandler(CommandHandler):
         last_command = context.get('last_generated_command')
         
         if not last_error or context.get('last_execution_success', True):
-            self._user_io.display_error("Nessun errore da correggere. Esegui prima un comando che fallisce.")
+            self._user_io.display_error("No error to fix.")
             return True
             
         # Add fix request to chat
@@ -127,7 +127,7 @@ class FixHandler(CommandHandler):
         fixed_command = str(response)
         
         # Display command and add it to conversation context
-        self._user_io.display_message(f"[green]Comando corretto:[/green] {fixed_command}")
+        self._user_io.display_message(f"[green]Fixed command:[/green] {fixed_command}")
         self._chat_session.add_assistant_message(fixed_command)
         context['last_generated_command'] = response.command
         context['last_execution_error'] = None  # Reset error
@@ -158,7 +158,7 @@ class RegularHandler(CommandHandler):
         generated_command = str(response)
         
         # Display command and add it to conversation context
-        self._user_io.display_message(f"[green]Comando suggerito:[/green]\n{generated_command}")
+        self._user_io.display_output(f"[green]Suggested command:[/green]\n{generated_command}")
         self._chat_session.add_assistant_message(generated_command)
         context['last_generated_command'] = response.command
         return True
@@ -169,7 +169,7 @@ class CommitHandler(CommandHandler):
 
     def handle(self, content: str, commit: dict):
         if (create_custom_commit(commit['commit_title'], commit['commit_body'])):
-            self._user_io.display_success("Commit succesfull!")
+            self._user_io.display_success("Commit successful!")
         else:
             self._user_io.display_error("Unable to commit changes")
         return False
@@ -200,6 +200,6 @@ class RefineCommitHandler(CommandHandler):
         self._chat_session.add_user_message(correction_msg)
 
         return True
-    
-        
+
+
 

@@ -11,7 +11,7 @@ class UserIO:
     # TODO: improve commit cli interaction
     def _check_quit(self, input_str: str) -> None:
         if input_str.strip().lower() == "/quit":
-            console.print("[yellow]👋 Programma terminato.[/yellow]")
+            console.print("[yellow]Program terminated.[/yellow]")
             exit(0)
 
     def ask(self, question: str) -> str:
@@ -21,20 +21,20 @@ class UserIO:
         return response
 
     def confirm(self, commit_data: str) -> bool:
-        console.print(Panel(commit_data, title="[green]Messaggio di commit generato[/green]", border_style="green"))
+        console.print(Panel(commit_data, title="[green]Generated commit message[/green]", border_style="green"))
 
-        response = Confirm.ask("[blue]💬 Vuoi effettuare il commit?[/blue]")
+        response = Confirm.ask("[blue]Do you want to perform the commit?[/blue]")
         self._check_quit(str(response))
         
         if response:
-            console.print("[green]✅ Commit confermato.[/green]")
+            console.print("[green]Commit confirmed.[/green]")
             return True
         else:
-            console.print("[yellow]⚠️  Operazione annullata.[/yellow]")
+            console.print("[yellow]Operation cancelled.[/yellow]")
             return False
 
     def ask_new_info(self) -> str:
-        response = Prompt.ask("[cyan]✏️  Fornisci nuove direttive[/cyan]")
+        response = Prompt.ask("[cyan]Provide new instructions[/cyan]")
         self._check_quit(response)
         return response
     
@@ -58,16 +58,31 @@ class UserIO:
     def display_output(self, output: str) -> None:
         console.print(Panel(output, title="Output", border_style="blue"))
     
-    def display_help(self) -> None:
+    def display_cmd_help(self) -> None:
         help_text = """
-[bold cyan]Comandi disponibili:[/bold cyan]
-• [yellow]/exec[/yellow] - Esegue il comando generato
-• [yellow]/refine <correzioni>[/yellow] - Raffina il comando con nuove specifiche
-• [yellow]/fix[/yellow] - Corregge il comando dopo un errore di esecuzione
-• [yellow]/quit[/yellow] - Esce dal programma
-• [yellow]help[/yellow] - Mostra questo aiuto
+[bold cyan]Available commands:[/bold cyan]
+• [yellow]/exec[/yellow] - Executes the generated command
+• [yellow]/refine <corrections>[/yellow] - Refines the command with new specifications
+• [yellow]/fix[/yellow] - Fixes the command after an execution error
+• [yellow]/quit[/yellow] - Exits the program
+• [yellow]/help[/yellow] - Shows this help
 
-Digita semplicemente la tua richiesta per generare un nuovo comando.
+Simply type your request to generate a new command.
         """
+        
         console.print(Panel(help_text, border_style="cyan"))
+
+    def display_commit_help(self) -> None:
+        help_text = """
+[bold cyan]Available commands:[/bold cyan]
+• [yellow]/commit[/yellow] - Commits all staged files using the generated messages
+• [yellow]/refine <corrections>[/yellow] - Refines the command with new specifications
+• [yellow]/quit[/yellow] - Exits the program
+• [yellow]/help[/yellow] - Shows this help
+
+Simply type your request to generate a new command.
+        """
+        
+        console.print(Panel(help_text, border_style="cyan"))
+
 

@@ -48,34 +48,45 @@ class CommitConversationHandler():
         self.prepare()
 
         while (True):
-            
-             # Get llm response
-            response = self._llm_client.generate_structured_response(self._chat_session, CommitResponse)
-            self._chat_session.add_assistant_message(str(response))
+            try:
+                # Get llm response
+                response = self._llm_client.generate_structured_response(self._chat_session, CommitResponse)
+                self._chat_session.add_assistant_message(str(response))
 
-            if response.mode == Mode.COMMIT:
-                # Update commit dictionary
-                self._commit['commit_title'] = response.commit.title
-                self._commit['commit_body'] = response.commit.body
+                if response.mode == Mode.COMMIT:
+                    # Update commit dictionary
+                    self._commit['commit_title'] = response.commit.title
+                    self._commit['commit_body'] = response.commit.body
 
-                # Display generated commit
-                self._user_io.display_output(f"Commit title: {self._commit['commit_title']}\nCommit body: {self._commit['commit_body']}")
+                    # Display generated commit
+                    self._user_io.display_output(f"Commit title: {self._commit['commit_title']}\nCommit body: {self._commit['commit_body']}")
 
-                # Get user query
-                user_input = self._user_io.ask_query()
+                    # Get user query
+                    user_input = self._user_io.ask_query()
 
-                # Parse and handle command
-                parsed_command = self._parser.parse(user_input)
-                handler = self._handlers[parsed_command.command_type]
+                    # Handle help command
+                    if user_input.lower() in ['/help', 'help', '?']:
+                        self._user_io.display_commit_help()
+                        continue
 
-                should_continue = handler.handle(parsed_command.content, self._commit)
-                if not should_continue:
-                    break
-            elif response.mode == Mode.QUESTION:
-                for i, question in enumerate(response.questions.questions):
-                    user_response = self._user_io.ask(str(question))
-                    self._chat_session.add_user_message(user_response)
-            else:
-                raise ValueError(f"Unexpected response mode: {response.mode}")
+                    # Parse and handle command
+                    parsed_command = self._parser.parse(user_input)
+                    handler = self._handlers[parsed_command.command_type]
+
+                    should_continue = handler.handle(parsed_command.content, self._commit)
+                    if not should_continue:
+                        break
+                elif response.mode == Mode.QUESTION:
+                    for i, question in enumerate(response.questions.questions):
+                        user_response = self._user_io.ask(str(question))
+                        self._chat_session.add_user_message(user_response)
+                else:
+                    raise ValueError(f"Unexpected response mode: {response.mode}")
+                
+            except KeyboardInterrupt:
+                self._user_io.display_message("\n[yellow]Program terminated..[/yellow]")
+                break
+            except Exception as e:
+                self._user_io.display_error(f"Unexpected error: {str(e)}")
             
 

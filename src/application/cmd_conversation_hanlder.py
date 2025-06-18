@@ -50,7 +50,7 @@ class CmdConversationHandler():
 
                 # Handle help command
                 if user_input.lower() in ['/help', 'help', '?']:
-                    self._user_io.display_help()
+                    self._user_io.display_cmd_help()
                     continue
                 
                 # Parse and handle command
