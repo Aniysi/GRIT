@@ -47,7 +47,8 @@ class CommitConversationHandler():
     def handle(self):
         self.prepare()
 
-        while (True):
+        should_exit = False
+        while (not should_exit):
             try:
                 # Get llm response
                 response = self._llm_client.generate_structured_response(self._chat_session, CommitResponse)
@@ -75,7 +76,7 @@ class CommitConversationHandler():
 
                     should_continue = handler.handle(parsed_command.content, self._commit)
                     if not should_continue:
-                        break
+                        should_exit = True
                 elif response.mode == Mode.QUESTION:
                     for i, question in enumerate(response.questions.questions):
                         self._user_io.display_question(str(question))
@@ -85,7 +86,7 @@ class CommitConversationHandler():
                             handler = self._handlers[parsed_command.command_type]
                             should_continue = handler.handle(parsed_command.content, self._commit)
                             if not should_continue:
-                                break
+                                should_exit = True
                         else:
                             self._chat_session.add_user_message(user_input)
                 else:
