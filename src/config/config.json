@@ -1,7 +1,7 @@
 {
     "output-language": "english",
     "ollama": {
-        "model": "qwen3-4B",
+        "model": "",
         "host": "http://localhost:11434"
     },
     "embedding-model": "nomic-embed-text"

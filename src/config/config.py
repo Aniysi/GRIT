@@ -1,3 +1,5 @@
+from cli.user_io import UserIO
+
 import json
 from pathlib import Path
 
@@ -5,7 +7,14 @@ def load_config():
     try:
         config_path = Path(__file__).parent / "config.json"
         with open(config_path, "r") as f:
-            return json.load(f)
+            config = json.load(f)
+            if not config['ollama'] or not config['ollama']['model']:
+                userIO = UserIO()
+                userIO.display_error("Ollama model absent. Please provide an existing Ollama model name:")
+                model = userIO.ask_query()
+                config['ollama']['model'] = model
+                save_config(config)
+            return config
     except FileNotFoundError:
         raise FileNotFoundError(
             f"config.json not found. Please create a config.json at {config_path.parent} with the following format:\n"
