@@ -1,178 +1,293 @@
 # Gini
 
-## 1 - Introduzione
+## 1 - Introduction
 
-**Gini** è un plugin per Git scritto in **Python**, pensato per semplificare l'interazione con Git attraverso l'uso del linguaggio naturale. Il plugin sfrutta le potenzialità dei **LLM (Large Language Models)** per:
+**Gini** is a Git plugin written in **Python**, designed to simplify interaction with Git through the use of natural language. The plugin leverages the power of **LLMs (Large Language Models)** to:
 
-- Generare comandi Git a partire da descrizioni in linguaggio naturale fornite dall’utente;
-- Creare commenti di commit templatizzati, basati sulle modifiche effettivamente apportate alla codebase e su eventuali indicazioni dell’utente.
+- Generate Git commands from natural language descriptions provided by the user;
+- Create commit comments based on changes actually made to the codebase and any user indications;
+- Analyze the impact of changes made to a file before uploading to the remote repository;
+- Resolve simple merge conflicts using LLM.
 
-## 2 - Requisiti Tecnologici
+## 2 - Technical Requirements
 
-Per utilizzare **Gini** in modo corretto ed efficiente, è necessario che il sistema in uso soddisfi i seguenti requisiti hardware e software.
+To use **Gini** correctly and efficiently, the system must meet the following hardware and software requirements.
 
-### Requisiti Software
+### Software Requirements
 
 - **Ollama** ≥ 0.6.6  
-  È necessario che sulla macchina sia attivo:
-  - Un **modello di embedding** compatibile: `nomic-embed-text`
-  - Un **modello LLM general-purpose** (il modello usato durante la creazione e il testing del software è `Qwen3`
-   (quantizzato, 4B parametri))
+  The machine must have active:
+  - A **general-purpose LLM model** (there are no precise guidelines for model selection, but generally a model with coding capabilities and power equal to or greater than Qwen 3 quantized with 4 billion parameters is recommended (used during software creation and testing)).
 
 - **Python** ≥ 3.13.0  
-  È richiesto un interprete Python aggiornato e compatibile con le librerie utilizzate e indicate a seguire.
+  An updated Python interpreter compatible with the libraries used and indicated below is required.
 
-- **Sistema Operativo**:  
-  - Solo **Windows**, versione **10 o superiore**.
+- **Operating System**:  
+  - **Windows only**, version **10 or higher**.
 
-### 2.1 - Librerie Python Necessarie
+### 2.1 - Required Python Libraries
 
-Le seguenti librerie devono essere installate nell’ambiente Python per garantire il corretto funzionamento del plugin:
+The following libraries must be installed in the Python environment to ensure proper plugin functionality:
 
-| Libreria     | Descrizione                                                                 |
-|--------------|-----------------------------------------------------------------------------|
-| `colorama`   | Per il supporto alla colorazione cross-platform del testo nel terminale     |
-| `attrs`      | Utility per la dichiarazione e gestione di classi basate su attributi       |
-| `PyMuPDF`    | Parsing e gestione dei file PDF, utile per l’analisi di documenti           |
-| `ollama`     | Client per interfacciarsi con il servizio Ollama                            |
-| `chromadb`   | Database vettoriale per la gestione della memoria semantica                 |
-| `rank_bm25`  | Algoritmo BM25 per il ranking semantico basato su similarità testuale       |
+| Library        | Description                                                                 |
+|----------------|-----------------------------------------------------------------------------|
+| `colorama`     | Cross-platform text coloring support in terminal                            |
+| `attrs`        | Utilities for declaring and managing attribute-based classes                |
+| `PyMuPDF`      | PDF file parsing and management, useful for document analysis               |
+| `ollama`       | Client for interfacing with Ollama service                                  |
+| `chromadb`     | Vector database for semantic memory management                              |
+| `rank_bm25`    | BM25 algorithm for semantic ranking based on textual similarity             |
+| `pytest`       | Framework for automated code testing                                        |
+| `pytest-cov`   | Plugin for generating code coverage reports during tests                    |
+| `GitPython`    | Python interface for interacting with Git repositories                      |
 
-## 3 - Installazione
+## 3 - Installation
 
-### 3.1 - Scarica il progetto
+### 3.1 - Download the project
 
-È sufficiente scaricare l’ultima **release** disponibile dal [repository GitHub](<https://github.com/Aniysi/Gini>) (assicurati che includa le cartelle `src/` e `chroma_db/`).
+Simply download the latest **release** available from the [GitHub repository](<https://github.com/Aniysi/Gini>) (make sure it includes the `src/` and `chroma_db/` folders).
 
 
-### 3.2 - Posiziona i file
+### 3.2 - Position the files
 
 <a name="32"></a>
-Estrai i file in una cartella a tua scelta nel file system di Windows.
+Extract the files to a folder of your choice in the Windows file system.
 
-### 3.3 - Aggiungi la directory `src/` alla variabile di ambiente **Path**
+### 3.3 - Add the `src/` directory to the **Path** environment variable
 
-A seguire sono indicati due metodi alternativi per l'aggiunta della cartella `src/` alla variabile **Path**.
+Below are two alternative methods for adding the `src/` folder to the **Path** variable.
 
-#### 3.3.1 - Primo metodo (guidato)
+#### 3.3.1 - First method (guided)
 
-1. Copia il percorso della cartella `src/`;
-2. Cerca **Modifica le variabili di ambiente relative al sistema** tramite la ricerca di Windows;
-3. Clicca sul primo risultato per aprire il pannello **Proprietà di sistema**;
-4. Nella finestra **Proprietà di sistema**, clicca su **Variabili d’ambiente...**;
-
-<p align="center">
-  <img src="./images/image.png" alt='Menù "Proprietà di sistema"' width="40%" />
-</p>
-
-5. Nella sezione inferiore della finestra **Variabili d’ambiente**, seleziona la variabile `Path` e clicca su **Modifica...**;
+1. Copy the path of the `src/` folder;
+2. Search for **Edit the system environment variables** through Windows search;
+3. Click on the first result to open the **System Properties** panel;
+4. In the **System Properties** window, click on **Environment Variables...**;
 
 <p align="center">
-  <img src="./images/image-1.png" alt='Menù "Variabili d’ambiente"' width="40%" />
+  <img src="./docs/assets/finestra_proprietà_sistema.png" alt='System Properties menu' width="40%" />
 </p>
 
-6. Nella finestra **Modifica variabile d’ambiente**, clicca su **Nuovo** e incolla il percorso della cartella `src/`;
+5. In the lower section of the **Environment Variables** window, select the `Path` variable and click **Edit...**;
 
 <p align="center">
-  <img src="./images/image-2.png" alt='Menù "Modifica variabile d’ambiente"' width="40%" />
+  <img src="./docs/assets/finestra_variabili_ambiente.png" alt='Environment Variables menu' width="40%" />
 </p>
 
-7. Conferma le modifiche cliccando su **OK** in tutte le finestre aperte.
+6. In the **Edit environment variable** window, click **New** and paste the path of the `src/` folder;
 
-Il percorso è ora correttamente impostato e il plugin è pronto all’uso.
+<p align="center">
+  <img src="./docs/assets/finestra_modifica_variabili_ambiente.png" alt='Edit environment variable menu' width="40%" />
+</p>
 
-#### 3.3.2 - Secondo metodo (ufficiale)
+7. Confirm the changes by clicking **OK** in all open windows.
 
-Alternativamente è possibile aggiungere la cartella `src/` alle variabili di sistema seguendo la guida ufficiale offerta da Microsoft, e disponibile all'indirizzo <https://learn.microsoft.com/it-it/windows/powertoys/environment-variables#editremove-variable>
+The path is now correctly set and the plugin is ready for use.
 
-### 3.4 - Setup dell’Ambiente Virtuale Python
+#### 3.3.2 - Second method (official)
 
-Per garantire l’isolamento delle dipendenze e un'esecuzione stabile del plugin **Gini**, si consiglia di configurare un **ambiente virtuale Python** all’interno della cartella `src/`. Di seguito è indicato come fare.
+Alternatively, you can add the `src/` folder to system variables by following the official guide provided by Microsoft, available at <https://learn.microsoft.com/en-us/windows/powertoys/environment-variables#editremove-variable>
 
-1. Posizionati nella cartella in cui sono stati precedentemente estratti i file ([Vedi sezione 3.2](#32)). La cartella dovrebbe avere la seguente struttura:
+### 3.4 - Python Virtual Environment Setup
+
+To ensure dependency isolation and stable execution of the **Gini** plugin, it is recommended to configure a **Python virtual environment** within the `src/` folder. Here's how to do it.
+
+1. Navigate to the folder where the files were previously extracted ([See section 3.2](#32)). The folder should have the following structure:
 
 ```bash
-choosen_directory/
+chosen_directory/
 ├── chroma_db/
 ├── src/
 └── requirements.txt
 ```
 
-2. Crea l'ambiente virtuale python eseguendo il seguente comando a terminale:
+2. Create the Python virtual environment by executing the following command in terminal:
 
 ```bash
 python -m venv venv
 ```
 
-3. Esegui l'ambiente virtuale python attraverso il seguente comando a terminale:
+3. Activate the Python virtual environment with the following terminal command:
 
 ```bash
 venv/Scripts/activate
 ```
 
-4. Scarica le dipendenze necessarie per usufruire del software eseguendo a terminale il seguente comando:
+4. Download the necessary dependencies to use the software by executing the following command in terminal:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 4 - Utilizzo del Plugin
+## 4 - Plugin Usage
 
-Il plugin **Gini** consente l'interazione con un modello linguistico (LLM) tramite richieste in linguaggio naturale, che vengono interpretate e convertite in comandi Git eseguibili.
+The **Gini** plugin provides four distinct usage modes:
 
-### 4.1 - Avvio
+- Creating Git commands - use the plugin to create and execute Git commands from natural language querys;
+- Creating commit messages - use the plugin to automate LLM-based generation of commit comments (title and body) through analysis of files in the staging area and direct interaction with the developer through questions about changes made;
+- Changes impact analisys - use the plugin to create reports on the impact that changes made to a file can have on the remote repository and their security;
+- Solving merge conflicts - use the plugin for automated resolution of simple merge conflicts.
 
-Una volta completata la configurazione e aggiunta la directory `src/` al `Path` di sistema, è possibile avviare Gini da qualsiasi terminale e da qualsiasi posizione del file system Windows. Per avviare il plugin, è sufficiente digitare:
+### 4.1 - Creating Git Commands
+
+#### 4.1.1 - Startup
+
+Once configuration is complete and the `src/` directory is added to the system `Path`, you can start Gini from any terminal and from any location in the Windows file system. To start generating git commands, simply type:
 
 ```bash
 gini cmd
 ```
 
-e premere invio.
+and press enter.
 
-### 4.2 - Modalità di utilizzo
+#### 4.1.2 - Usage Mode
 
-All'avvio, Gini entra in una modalità interattiva (chat) con il modello LLM. L'utente può digitare richieste in linguaggio naturale, come ad esempio: *crea un nuovo branch chiamato "feature/login"*.
+On startup, Gini enters an interactive mode (chat) with the LLM model. The user can type requests in natural language, such as: *create a new branch called "feature/login"*.
 
-Il modello restituirà un comando Git coerente con la richiesta, insieme a una breve spiegazione.
+The model will return a Git command consistent with the request, along with a brief explanation.
 
->Nota: ogni nuova richiesta non preceduta da un comando (/exec, /fix, ecc.) annulla il contesto della richiesta precedente. Il plugin non mantiene lo stato della conversazione.
+>Note: each new request not preceded by a command (/exec, /fix, etc.) cancels the context of the previous request. The plugin does not maintain conversation state.
 
-### 4.2.1 - Esecuzione dei comandi
+#### 4.1.2.1 - Command Execution
 
-Dopo che Gini ha proposto un comando Git, è possibile eseguirlo utilizzando il comando:
+After Gini has proposed a Git command, it can be executed using the command:
 
 ```bash
 /exec
 ```
 
-Se l'esecuzione ha successo, il terminale tornerà alla modalità di attesa per una nuova richiesta.
-Se l'esecuzione fallisce, Gini stamperà il messaggio d'errore restituito dal sistema. A quel punto, l'utente può:
- - Inviare una nuova richiesta, oppure
- - Correggere il comando proposto utilizzando il comando:
+If execution succeeds, the terminal will return to waiting mode for a new request.
+If execution fails, Gini will print the error message returned by the system. At that point, the user can:
+
+- Send a new request, or
+- Correct the proposed command using the command:
 
  ```bash
 /fix
 ```
 
-Gini genererà una nuova versione corretta del comando precedente, basandosi sull'errore restituito.
+Gini will generate a new corrected version of the previous command, based on the returned error.
 
-### 4.2.2 - Raffinamento del comando
+#### 4.1.2.2 - Command Refinement
 
-È possibile anche indicare direttamente al modello come rifinire il comando generato secondo le proprie necessità attraverso il comando:
+It's also possible to directly instruct the model on how to refine the generated command according to your needs through the command:
 
 ```bash
 /refine <query>
 ```
 
-Dove `<query>` è una descrizione in linguaggio naturale delle modifiche da applicare (es. *"rimuovi il flag --force"* o *"cambia il nome del branch in develop"*).
+Where `<query>` is a natural language description of the changes to be applied (e.g. *"remove the --force flag"* or *"change the branch name to develop"*).
 
-### 4.2.3 - Terminare la sessione
+#### 4.1.2.3 - Terminating the session
 
-In qualsiasi momento è possibile terminare la sessione con il comando:
+At any time, you can terminate the session with the command:
 
 ```bash
 /quit
 ```
 
-Questo chiuderà il plugin e uscirà dalla modalità interattiva.
+This will close the plugin and exit interactive mode.
+
+### 4.2 - Creating commit messages
+
+#### 4.2.1 - Startup
+
+Once you have changed your codebase and added all files you want to commit to the staging area, start generating the commit comments by simply typing:
+
+```bash
+gini commit
+```
+
+on any terminal and press enter.
+
+>Note: you need to be inside of a Git repository and have staged files to access this feature.
+
+#### 4.2.2 - Usage Mode
+
+On startup, Gini retrives all staged files and provides them to the LLM. The LLM can either generate and display a commit messagge regarding user changes, or ask the user some questions regarding the staged files. When the LLM has enugh informations it will generate the commit message to display on bash.
+
+#### 4.2.2.1 - Commit execution
+
+If you are satisfied with the message produced by the LLM you can commit all staged changes exectuing the following command:
+
+```bash
+/commit
+```
+
+If the commit is succesfull a message will be displayed and the session will be temrinated.
+
+#### 4.2.2.2 - Commit refinement
+
+If you are not satisfied with the generated message you can provide some corrections by executing the command:
+
+```bash
+/commit
+```
+
+followed by a refinement query. This will restart the message genration providing new info to the LLM. The LLM could again ask the user some question.
+
+#### 4.2.2.3 - Terminating the session
+
+At any time, you can terminate the session with the command:
+
+```bash
+/quit
+```
+
+This will close the plugin and exit interactive mode.
+
+### 4.3 - Changes impact analisys
+
+> **⚠️ Warning**: this feature is currently in experimental stage, and due to the limitations of the LLM used may not function reliably. Results may be inconsistent or incomplete.
+
+
+#### 4.3.1 - Usage
+
+Once you have changed your codebase and added all updated files to the staging area you can ask the LLM to analyze a specific staged file in order to understand the impact your chages will have on the remote repository, amd possible security breaches your file introduces. To do so, type on your bash:
+
+```bash
+gini impact .\file\path
+```
+
+This will provide a detailed description of effect your changes could have on the repository and a rating of their security (value from 1 to 10 - 1 represents high risk; 10 represents low risk).
+
+>Note: due to the high complexity of this task, the command can be executed on a single file at a time.
+
+### 4.4 - Solving merge conflicts
+
+#### 4.4.1 - Usage
+
+The plugin also provides a functionality to automatically solve merge conflicts derived, for example, from pulling remote changes on your local branch. This functionality can be accessed by executing on your bash the following command:
+
+```bash
+gini merge .\path\to\file\or\directory
+```
+
+And it will automatically fetch current and incoming changes of each file affected by the command and ask the LLM to merge them. The LLM can choose not to solve a specific merge when it's deemed to complex for its own capabilities, but will otherwise edit and commit all affected files.
+
+> **⚠️ Warning**: this feature is the only one which actually edits your files, so keep in mind the LLM won't necessarily be able to solve conflicts and it may also introduce mistakes while doing so.
+
+## 5 - Configuration
+
+The plugin offers some configuration options regarding some of the key aspects of its usage. Specifically it is possible to:
+
+- Specify the output languge of all plugin answers
+- Select the Ollama model you want to use
+
+For more advanced configuration options (for example specify your machine Ollama port if it's not the default one), it is suggested to directly modify the file `config.json` located at `src\config\config.py`
+
+### 5.1 - Set output language
+
+It is possible to set plugin output language for natural text using the command:
+
+```bash
+gini --set-output-language <preferred-natural-output-language>
+```
+
+### 5.2 - Set Ollama model
+
+It is possible to set the Ollama model you want to use by typing on bash:
+
+```bash
+gini --set-model <your-ollama-model-name>
+```

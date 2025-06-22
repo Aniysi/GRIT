@@ -1,0 +1,8 @@
+{
+    "output-language": "english",
+    "ollama": {
+        "model": "",
+        "host": "http://localhost:11434"
+    },
+    "embedding-model": "nomic-embed-text"
+}
