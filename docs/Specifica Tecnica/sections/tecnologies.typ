@@ -15,7 +15,7 @@ Il software si affida al database vettoriale ChromaDB per la memorizzazione del 
 la raccolta di esempi coerenti con la query utente, da fornire come contesto all'LLM.
 
 Oltre a Python come base di sviluppo e ChromaDB come database, il sistema si affida a un software esterno per l'interazione con LLM. Trattasi di 
-Ollama, utilizzato per l'interazione con LLM, e fruibile in python mediante l'appozita libreria Ollama Python.
+Ollama, utilizzato per l'interazione con LLM, e fruibile in python mediante l'apposita libreria Ollama Python.
 
 == Linguaggi utilizzati
 
@@ -33,7 +33,7 @@ Il sistema integra numerosi pacchetti Python e strumenti software open source, c
 
 - *rank_bm25*: implementazione dell’algoritmo BM25, impiegata per il ranking dei documenti recuperati sulla base della rilevanza testuale. Viene utilizzata in combinazione con le ricerche vettoriali per aumentare la precisione.
 
-- *ollama*: libreria Python utilizzata per interagire con l'omonimo pensato per l’utilizzo locale di modelli LLM. Consente di eseguire inferenze senza dipendere da servizi cloud esterni, garantendo maggiore controllo e privacy.
+- *ollama*: libreria Python utilizzata per interagire con l'omonimo software pensato per l’utilizzo locale di modelli LLM. Consente di eseguire inferenze senza dipendere da servizi cloud esterni, garantendo maggiore controllo e privacy.
 
 - *GitPython*: libreria che permette di interagire in modo programmatico con repository Git. È fondamentale per l’automazione delle operazioni di commit, merge e generazione di commenti.
 

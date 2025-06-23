@@ -1,5 +1,10 @@
 == Modulo 2 – Generazione di messaggi di commit
 
+#figure(
+    image("..\..\assets\create_commit_module.png", width: 90%),
+    caption: "Diagramma logico dell'architettura del software"
+)
+
 === Struttura e responsabilità
 
 Il modulo per la generazione dei messaggi di commit è centrato sulla classe `CommitConversationHandler`, 
@@ -16,11 +21,6 @@ arricchire il contesto prima di generare il messaggio di commit definitivo.
 La gestione delle azioni conseguenti al comando è affidata a una gerarchia di handler che estendono 
 `CommandHandler`, tra cui `CommitHandler` e `RefineCommitHandler`, responsabili rispettivamente della 
 generazione e della raffinazione dei messaggi di commit.
-
-#figure(
-    image("..\..\assets\create_commit_module.png", width: 90%),
-    caption: "Diagramma logico dell'architettura del software"
-)
 
 === Pattern utilizzati
 
