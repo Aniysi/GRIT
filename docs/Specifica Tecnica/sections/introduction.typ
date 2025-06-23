@@ -12,12 +12,12 @@ l’estensione futura del plugin realizzato.
 
 L'obiettivo principale del progetto è la realizzazione di un plugin per il software Git, che introduca in quest'ultimo la
 possibilità di gestire e generare testo in linguaggio naturale, in accompagnamento ad alcune delle principali funzionalità del
-spoftware. Le principali features implementate dal plugin sono:
+software. Le principali features implementate dal plugin sono:
 
-- generazione di comandi Git per CLI a partire da query in lingauggio naturale che descrivano l'intenzione dell'utente;
+- generazione di comandi Git per CLI a partire da query in linguaggio naturale che descrivano l'intenzione dell'utente;
 - generazione automatica di commenti di commit a seguito di analisi del codice modificato;
 - l’analisi dell’impatto delle modifiche correnti sul repository remoto;
-- utilizzo di LLM per la risoluzione automatizzata di coflitti di merge.
+- utilizzo di LLM per la risoluzione automatizzata di conflitti di merge.
 
 Le attività saranno accompagnate da sessioni di test e dalla produzione di documentazione tecnica, al fine 
 di assicurare l’affidabilità e la riusabilità della soluzione finale.
